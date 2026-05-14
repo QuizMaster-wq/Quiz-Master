@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz — 20 Questions</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Palette: Deep Focus (Blues & Purples) */
+            --teal: #4361ee;
+            --teal-dark: #3f37c9;
+            --teal-light: #edf2ff;
+            --teal-mid: #b5c2fb;
+            --red: #ef476f;
+            --red-light: #fff0f3;
+            --green: #06d6a0;
+            --green-light: #e6fcf5;
+            --amber: #f59e0b;
+            --amber-light: #fef3c7;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-400: #94a3b8;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            
+            --radius: 16px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1);
+            
+            --bg: var(--gray-100);
+            --card-bg: white;
+            --text: var(--gray-800);
+            --text-secondary: var(--gray-600);
+            --border: var(--gray-200);
+            --btn-bg: white;
+            --btn-hover: var(--teal-light);
+            --explain-bg: #fdfbff;
+            --explain-border: #dbeafe;
+            --explain-text: #1e40af;
+            --toast-bg: #1e293b;
+            --toast-text: #fff;
+            --danger-timer-bg: #fff1f2;
+            --option-key-bg: var(--gray-100);
+            --option-key-border: var(--gray-200);
+            --option-key-color: var(--gray-400);
+        }
+
+        body.dark {
+            --bg: #0b0f1a;
+            --card-bg: #161e2d;
+            --text: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #1e293b;
+            --gray-50: #1e293b;
+            --gray-100: #1e293b;
+            --gray-200: #334155;
+            --gray-400: #64748b;
+            --gray-600: #94a3b8;
+            --gray-800: #f1f5f9;
+            --teal: #5c7cfa;
+            --teal-light: rgba(92, 124, 250, 0.1);
+            --teal-mid: #3b5bdb;
+            --red-light: #441a1a;
+            --green-light: #0d2d1f;
+            --amber-light: #422a06;
+            --explain-bg: #1a1f2e;
+            --explain-border: #2e3b5e;
+            --explain-text: #93c5fd;
+            --danger-timer-bg: #4c1d1d;
+        }
+
+        body.dark {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --gray-50: #1e293b;
+            --gray-100: #1e293b;
+            --gray-200: #334155;
+            --gray-400: #64748b;
+            --gray-600: #94a3b8;
+            --gray-800: #e2e8f0;
+            --teal-light: #0d3b36;
+            --teal-mid: #134e4a;
+            --red-light: #7f1d1d;
+            --green-light: #064e3b;
+            --amber-light: #78350f;
+            --explain-bg: #2d2a1c;
+            --explain-border: #5c4b1f;
+            --explain-text: #fcd34d;
+            --toast-bg: #e2e8f0;
+            --toast-text: #1e293b;
+            --danger-timer-bg: #3b1010;
+            --option-key-bg: #334155;
+            --option-key-border: #475569;
+            --option-key-color: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.lang-en {
+            direction: ltr;
+        }
+        body.lang-en .q-header,
+        body.lang-en .opt-btn {
+            text-align: left;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            height: 60px;
+            box-shadow: var(--shadow-sm);
+            transition: background 0.3s;
+        }
+        .topbar-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.1em;
+            color: var(--teal-dark);
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .progress-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ring-wrap {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+        }
+        .ring-wrap svg {
+            transform: rotate(-90deg);
+        }
+        .ring-bg {
+            fill: none;
+            stroke: var(--border);
+            stroke-width: 4;
+        }
+        .ring-fill {
+            fill: none;
+            stroke: var(--teal);
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-dasharray: 113;
+            stroke-dashoffset: 113;
+            transition: stroke-dashoffset 0.4s ease;
+        }
+        .ring-label {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.1;
+        }
+        .ring-answered {
+            font-size: 0.82em;
+            font-weight: 800;
+            color: var(--teal-dark);
+        }
+        .ring-total {
+            font-size: 0.6em;
+            color: var(--gray-400);
+        }
+        .score-pill {
+            background: var(--teal);
+            color: white;
+            font-weight: 700;
+            font-size: 0.88em;
+            padding: 5px 14px;
+            border-radius: 99px;
+            flex-shrink: 0;
+            letter-spacing: 0.02em;
+            min-width: 70px;
+            text-align: center;
+        }
+        #timer-display {
+            font-size: 0.88em;
+            font-weight: 700;
+            color: var(--gray-600);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.03em;
+            flex-shrink: 0;
+            min-width: 56px;
+            transition: color 0.3s;
+        }
+        #timer-display.warning {
+            color: #d97706;
+            animation: pulse-warn 0.6s infinite;
+        }
+        #timer-display.danger {
+            color: #dc2626;
+            animation: pulse-danger 0.4s infinite;
+            background: var(--danger-timer-bg);
+            padding: 4px 12px;
+            border-radius: 99px;
+        }
+
+        .pause-btn {
+            background: none;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 4px 8px;
+            color: var(--text);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, border-color 0.2s;
+            flex-shrink: 0;
+        }
+        .pause-btn:hover {
+            border-color: var(--teal);
+            background: var(--teal-light);
+        }
+
+        @keyframes pulse-warn {
+            0%,
+            100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        @keyframes pulse-danger {
+            0%,
+            100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 60%, #00b5a9 100%);
+            color: white;
+            padding: 48px 24px 40px;
+            text-align: center;
+            transition: padding 0.3s;
+        }
+        .header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.4em;
+            letter-spacing: -0.01em;
+            margin-bottom: 8px;
+        }
+        .header p {
+            opacity: 0.85;
+            font-size: 1em;
+        }
+        .lang-switch,
+        .dark-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 99px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 0 6px;
+            transition: background 0.2s;
+        }
+        .lang-switch:hover,
+        .dark-toggle:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        /* Setup overlay */
+        .setup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .setup-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 32px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            text-align: start;
+        }
+        .setup-card h2 {
+            font-family: 'DM Serif Display', serif;
+            color: var(--teal-dark);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .setup-group {
+            margin-bottom: 20px;
+        }
+        .setup-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        .setup-group select,
+        .setup-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: var(--gray-50);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95em;
+            transition: border 0.2s;
+        }
+        .setup-group select:focus,
+        .setup-group input:focus {
+            border-color: var(--teal);
+            outline: none;
+            box-shadow: 0 0 0 3px var(--teal-light);
+        }
+        .setup-actions {
+            text-align: center;
+            margin-top: 24px;
+        }
+        .setup-actions .btn-primary {
+            padding: 12px 36px;
+            font-size: 1em;
+            border: none;
+            background: var(--teal);
+            color: white;
+            border-radius: 99px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Multi-question container */
+        .multi-question-container {
+            padding: 16px;
+        }
+        .multi-question-container .q-card {
+            margin-bottom: 24px;
+        }
+
+        #main-view {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 16px 16px 120px;
+        }
+
+        .q-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: box-shadow 0.2s, background 0.3s;
+        }
+        .q-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+        .q-card.card-correct {
+            background: #f0faf6;
+            border-color: #a8dfc8;
+        }
+        .q-card.card-wrong {
+            background: #fff4f4;
+            border-color: #f5b8b8;
+        }
+        body.dark .q-card.card-correct {
+            background: #0a2e24;
+        }
+        body.dark .q-card.card-wrong {
+            background: #2d1111;
+        }
+
+        .q-header {
+            padding: 22px 24px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+        .q-num {
+            background: var(--teal-light);
+            color: var(--teal-dark);
+            font-weight: 700;
+            font-size: 0.78em;
+            padding: 4px 10px;
+            border-radius: 99px;
+            flex-shrink: 0;
+            margin-top: 3px;
+            letter-spacing: 0.04em;
+        }
+        .q-text {
+            font-size: 1.05em;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.5;
+            user-select: text;
+        }
+        .q-options {
+            padding: 16px 24px;
+            display: grid;
+            gap: 10px;
+        }
+        .opt-btn {
+            text-align: right;
+            padding: 13px 18px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: var(--gray-50);
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.97em;
+            color: var(--text);
+            transition: all 0.18s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            user-select: text;
+            position: relative;
+        }
+        body.lang-en .opt-btn {
+            text-align: left;
+        }
+        .opt-btn:hover:not(:disabled) {
+            border-color: var(--teal);
+            background: var(--teal-light);
+            color: var(--teal-dark);
+            transform: translateX(-4px);
+        }
+        body.lang-en .opt-btn:hover:not(:disabled) {
+            transform: translateX(4px);
+        }
+        .opt-btn:disabled {
+            cursor: default;
+        }
+        .opt-btn .opt-icon {
+            font-size: 1.1em;
+            flex-shrink: 0;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .opt-btn.correct {
+            background: var(--green-light) !important;
+            border-color: var(--green) !important;
+            color: var(--green) !important;
+            font-weight: 600;
+            transform: none;
+            animation: pop 0.4s ease;
+        }
+        .opt-btn.correct .opt-icon {
+            opacity: 1;
+        }
+        .opt-btn.incorrect {
+            background: var(--red-light) !important;
+            border-color: var(--red) !important;
+            color: var(--red) !important;
+            animation: shake 0.4s ease;
+        }
+        .opt-btn.incorrect .opt-icon {
+            opacity: 1;
+        }
+        .opt-key {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            background: var(--option-key-bg);
+            border: 1px solid var(--option-key-border);
+            font-size: 0.72em;
+            font-weight: 700;
+            color: var(--option-key-color);
+            flex-shrink: 0;
+            font-family: monospace;
+            transition: all 0.15s;
+        }
+        .opt-btn.correct .opt-key,
+        .opt-btn.incorrect .opt-key {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+        body.lang-en .shake {
+            animation-name: shake-ltr;
+        }
+        @keyframes shake-ltr {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(6px); }
+            40% { transform: translateX(-6px); }
+            60% { transform: translateX(4px); }
+            80% { transform: translateX(-4px); }
+        }
+
+        .explanation-box {
+            margin: 0 24px 20px;
+            border-radius: 10px;
+            display: none;
+            overflow: hidden;
+            border: 1px solid var(--explain-border);
+        }
+        .explanation-box.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .explanation-label {
+            font-size: 0.72em;
+            font-weight: 700;
+            color: #7a5c10;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            background: #f5e6b0;
+            padding: 7px 16px;
+            border-bottom: 1px solid var(--explain-border);
+        }
+        .exp-body {
+            font-size: 0.91em;
+            color: var(--explain-text);
+            line-height: 1.7;
+            padding: 14px 16px 10px;
+            background: var(--explain-bg);
+            border-right: 4px solid var(--teal);
+        }
+        body.lang-en .exp-body {
+            border-right: none;
+            border-left: 4px solid var(--teal);
+        }
+
+        .ai-buttons {
+            display: flex;
+            gap: 8px;
+            margin: 10px 24px 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .ai-btn {
+            padding: 6px 14px;
+            border-radius: 99px;
+            border: 1.5px solid var(--border);
+            background: var(--card-bg);
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text);
+        }
+        .ai-btn:hover {
+            border-color: var(--teal);
+            background: var(--teal-light);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 24px 16px 8px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            border: none;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            border-radius: 99px;
+            padding: 10px 22px;
+            font-size: 0.92em;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: var(--shadow-sm);
+            background: var(--gray-50);
+            color: var(--text);
+            border: 1.5px solid var(--border);
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+        .btn-primary {
+            background: var(--teal);
+            color: white;
+            border: none;
+        }
+        .btn-warning {
+            background: #f59e0b;
+            color: #000;
+            border: none;
+        }
+
+        #summary-view {
+            display: none;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 32px 16px 80px;
+        }
+        .summary-hero {
+            background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+            color: white;
+            border-radius: var(--radius);
+            padding: 40px 32px;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-lg);
+        }
+        .summary-score-big {
+            font-family: 'DM Serif Display', serif;
+            font-size: 4.5em;
+            line-height: 1;
+        }
+        .summary-score-label {
+            opacity: 0.85;
+            font-size: 1em;
+            margin-top: 6px;
+        }
+        .summary-pct {
+            display: inline-block;
+            margin-top: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 99px;
+            padding: 6px 20px;
+            font-size: 1.05em;
+            font-weight: 700;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .sstat {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+        .sstat-num {
+            font-size: 2em;
+            font-weight: 700;
+        }
+        .sstat-num.green { color: var(--green); }
+        .sstat-num.red { color: var(--red); }
+        .sstat-num.amber { color: var(--amber); }
+        .sstat-label {
+            font-size: 0.78em;
+            color: var(--gray-400);
+            margin-top: 4px;
+        }
+        .review-header {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.6em;
+            color: var(--red);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+        }
+        .review-item {
+            background: var(--card-bg);
+            border-right: 4px solid var(--red);
+            border-radius: var(--radius);
+            padding: 20px 22px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+        .review-q {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 10px;
+            line-height: 1.5;
+            user-select: text;
+        }
+        .review-yours {
+            color: var(--red);
+            font-size: 0.9em;
+            margin-bottom: 4px;
+        }
+        .review-correct {
+            color: var(--green);
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .review-exp {
+            font-size: 0.87em;
+            color: var(--explain-text);
+            background: var(--explain-bg);
+            border-right: 3px solid #d4a017;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--toast-bg);
+            color: var(--toast-text);
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-8px);
+        }
+
+        @media (max-width: 640px) {
+            .topbar {
+                height: auto;
+                padding: 10px 16px 0;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .topbar-title { display: none; }
+            .header h1 { font-size: 1.8em; }
+            .q-header { padding: 16px 16px 12px; }
+            .q-text { font-size: 0.97em; }
+            .q-options { padding: 10px 14px; gap: 8px; }
+            .opt-btn { padding: 11px 14px; font-size: 0.9em; }
+            .btn { padding: 9px 16px; font-size: 0.86em; }
+            .summary-score-big { font-size: 3em; }
+        }
+    </style>
+</head>
+<body class="">
+    <canvas id="confetti-canvas"></canvas>
+    <div class="toast" id="toast"></div>
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div class="topbar-title" id="app-title">🧠 ماستر الكويز</div>
+        <div class="progress-wrap">
+            <div class="ring-wrap">
+                <svg width="44" height="44" viewBox="0 0 44 44">
+                    <circle class="ring-bg" cx="22" cy="22" r="18"/>
+                    <circle class="ring-fill" cx="22" cy="22" r="18" id="ring-fill"/>
+                </svg>
+                <div class="ring-label">
+                    <span class="ring-answered" id="ring-answered">0</span>
+                    <span class="ring-total" id="ring-total">/0</span>
+                </div>
+            </div>
+        </div>
+        <div class="score-pill">⭐ <span id="score-top">0</span></div>
+        <span id="timer-display">00:20</span>
+        <button id="pause-btn" class="pause-btn" style="display:none;" title="إيقاف مؤقت / استئناف">⏸️</button>
+        <button class="lang-switch" id="lang-toggle" onclick="toggleLanguage()">🇸🇦 عربي</button>
+        <button class="dark-toggle" id="dark-toggle" onclick="toggleDarkMode()">🌙</button>
+    </div>
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1 id="main-title">🎓 Quiz — 20 Questions</h1>
+        <p id="main-sub">تم إنشاؤه بواسطة Quiz Bot | English Grammar, Environmental Science</p>
+    </div>
+
+    <!-- Setup screen -->
+    <div id="setup-view" class="setup-overlay">
+        <div class="setup-card">
+            <h2 id="setup-title">⚙️ إعدادات الكويز</h2>
+            <div class="setup-group">
+                <label for="display-mode" id="lbl-display">طريقة عرض الأسئلة</label>
+                <select id="display-mode">
+                    <option value="single" selected>سؤال سؤال</option>
+                    <option value="all">جميع الأسئلة في صفحة واحدة</option>
+                </select>
+            </div>
+            <div class="setup-group" id="time-group">
+                <label for="time-select" id="lbl-time">الوقت لكل سؤال</label>
+                <select id="time-select">
+                    <option value="10">10 ثوان</option>
+                    <option value="20" selected>20 ثانية</option>
+                    <option value="40">40 ثانية</option>
+                    <option value="60">1 دقيقة</option>
+                    <option value="120">2 دقيقتان</option>
+                    <option value="180">3 دقائق</option>
+                    <option value="240">4 دقائق</option>
+                    <option value="300">5 دقائق</option>
+                    <option value="0">بدون زمن محدد</option>
+                </select>
+                <small id="time-hint" style="font-size:0.7rem;color:var(--gray-400);display:block;margin-top:6px;"></small>
+            </div>
+            <div class="setup-actions">
+                <button class="btn-primary" id="start-quiz-btn">ابدأ الكويز</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN QUIZ VIEW -->
+    <div id="main-view" style="display:none;">
+        <div class="q-card" id="question-card">
+            <div class="q-header">
+                <span class="q-num" id="q-num">السؤال 1</span>
+                <div class="q-text" id="q-text">Loading...</div>
+            </div>
+            <div class="q-options" id="options-container"></div>
+            <div class="explanation-box" id="explanation-box">
+                <div class="explanation-label">💡 الشرح</div>
+                <div class="exp-body" id="exp-body"></div>
+            </div>
+            <div class="ai-buttons" id="ai-buttons" style="display: none;">
+                <button class="ai-btn" onclick="askAI('chatgpt')">🤖 ChatGPT</button>
+                <button class="ai-btn" onclick="askAI('gemini')">✨ Gemini</button>
+                <button class="ai-btn" onclick="askAI('deepseek')">🧠 DeepSeek</button>
+            </div>
+        </div>
+        <div class="controls" id="next-controls" style="display: none;">
+            <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">⏭ التالي</button>
+        </div>
+        <!-- Multi-question container -->
+        <div id="multi-question-container" class="multi-question-container" style="display:none;"></div>
+        <div class="controls" id="submit-all-controls" style="display:none;">
+            <button class="btn btn-primary" id="submit-all-btn" onclick="submitAllQuestions()">تسليم الكل</button>
+        </div>
+    </div>
+
+    <!-- SUMMARY VIEW -->
+    <div id="summary-view">
+        <div class="summary-hero">
+            <div class="summary-score-big" id="final-score">0</div>
+            <div class="summary-score-label" id="final-outof">من 0</div>
+            <div class="summary-pct" id="final-pct">0%</div>
+        </div>
+        <div class="summary-grid">
+            <div class="sstat">
+                <div class="sstat-num green" id="stat-correct">0</div>
+                <div class="sstat-label">✅ صحيح</div>
+            </div>
+            <div class="sstat">
+                <div class="sstat-num red" id="stat-wrong">0</div>
+                <div class="sstat-label">❌ خطأ</div>
+            </div>
+            <div class="sstat">
+                <div class="sstat-num amber" id="stat-skipped">0</div>
+                <div class="sstat-label">⏰ انتهى الوقت</div>
+            </div>
+        </div>
+        <div id="review-section"></div>
+        <div class="controls" style="padding-top: 20px;">
+            <button class="btn btn-warning" id="review-mistakes-btn" onclick="startMistakeReview()">🔁 إعادة الأخطاء فقط</button>
+            <button class="btn btn-primary" onclick="restartFullQuiz()">🔄 إعادة الكويز كامل</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== QUESTION BANK ====================
+        const QUIZ_DATA = [
+  {
+    id: 1,
+    ar: {
+      question: `We should keep our ............... clean.`,
+      options: ["planet", "litter", "plastic", "paper"],
+      correct: 0,
+      explanation: `The correct answer is 'planet' because we should keep our planet clean.`
+    },
+    en: {
+      question: `We should keep our ............... clean.`,
+      options: ["planet", "litter", "plastic", "paper"],
+      correct: 0,
+      explanation: `The correct answer is 'planet' because we should keep our planet clean.`
+    }
+  },
+  {
+    id: 2,
+    ar: {
+      question: `The 3Rs are ..............., Reuse, and Recycle.`,
+      options: ["Water", "Reduce", "Electricity", "Bottle"],
+      correct: 1,
+      explanation: `The correct answer is 'Reduce' because the 3Rs stand for Reduce, Reuse, and Recycle.`
+    },
+    en: {
+      question: `The 3Rs are ..............., Reuse, and Recycle.`,
+      options: ["Water", "Reduce", "Electricity", "Bottle"],
+      correct: 1,
+      explanation: `The correct answer is 'Reduce' because the 3Rs stand for Reduce, Reuse, and Recycle.`
+    }
+  },
+  {
+    id: 3,
+    ar: {
+      question: `We can ............... a bottle by using it again.`,
+      options: ["reuse", "clean", "reduce", "replay"],
+      correct: 0,
+      explanation: `The correct answer is 'reuse' because reusing means using something again.`
+    },
+    en: {
+      question: `We can ............... a bottle by using it again.`,
+      options: ["reuse", "clean", "reduce", "replay"],
+      correct: 0,
+      explanation: `The correct answer is 'reuse' because reusing means using something again.`
+    }
+  },
+  {
+    id: 4,
+    ar: {
+      question: `We can ............... old paper and plastic to make new things.`,
+      options: ["refuse", "rearrange", "apply", "Recycle"],
+      correct: 3,
+      explanation: `The correct answer is 'Recycle' because recycling means converting old materials into new things.`
+    },
+    en: {
+      question: `We can ............... old paper and plastic to make new things.`,
+      options: ["refuse", "rearrange", "apply", "Recycle"],
+      correct: 3,
+      explanation: `The correct answer is 'Recycle' because recycling means converting old materials into new things.`
+    }
+  },
+  {
+    id: 5,
+    ar: {
+      question: `Using less water and electricity is called ...............`,
+      options: ["Reduce", "repair", "replay", "clean"],
+      correct: 0,
+      explanation: `The correct answer is 'Reduce' because reducing means using less of something.`
+    },
+    en: {
+      question: `Using less water and electricity is called ...............`,
+      options: ["Reduce", "repair", "replay", "clean"],
+      correct: 0,
+      explanation: `The correct answer is 'Reduce' because reducing means using less of something.`
+    }
+  },
+  {
+    id: 6,
+    ar: {
+      question: `A ............... can be refilled instead of throwing it away.`,
+      options: ["book", "bottle", "planet", "paper"],
+      correct: 1,
+      explanation: `The correct answer is 'bottle' because bottles can often be refilled.`
+    },
+    en: {
+      question: `A ............... can be refilled instead of throwing it away.`,
+      options: ["book", "bottle", "planet", "paper"],
+      correct: 1,
+      explanation: `The correct answer is 'bottle' because bottles can often be refilled.`
+    }
+  },
+  {
+    id: 7,
+    ar: {
+      question: `We should recycle ............... and plastic.`,
+      options: ["paper", "class", "air", "electricity"],
+      correct: 0,
+      explanation: `The correct answer is 'paper' because paper is commonly recycled.`
+    },
+    en: {
+      question: `We should recycle ............... and plastic.`,
+      options: ["paper", "class", "air", "electricity"],
+      correct: 0,
+      explanation: `The correct answer is 'paper' because paper is commonly recycled.`
+    }
+  },
+  {
+    id: 8,
+    ar: {
+      question: `Keeping the planet clean helps all people and animals ...............`,
+      options: ["throw", "reduce", "drink", "live"],
+      correct: 3,
+      explanation: `The correct answer is 'live' because a clean planet supports life.`
+    },
+    en: {
+      question: `Keeping the planet clean helps all people and animals ...............`,
+      options: ["throw", "reduce", "drink", "live"],
+      correct: 3,
+      explanation: `The correct answer is 'live' because a clean planet supports life.`
+    }
+  },
+  {
+    id: 9,
+    ar: {
+      question: `The 3Rs help us protect our ...............`,
+      options: ["paper", "bottle", "planet", "water"],
+      correct: 2,
+      explanation: `The correct answer is 'planet' because the 3Rs help protect the planet.`
+    },
+    en: {
+      question: `The 3Rs help us protect our ...............`,
+      options: ["paper", "bottle", "planet", "water"],
+      correct: 2,
+      explanation: `The correct answer is 'planet' because the 3Rs help protect the planet.`
+    }
+  },
+  {
+    id: 10,
+    ar: {
+      question: `I brush my teeth every ............... I wanted to sleep early.`,
+      options: ["or", "and", "but", "because"],
+      correct: 3,
+      explanation: `The correct answer is 'because' because it explains the reason.`
+    },
+    en: {
+      question: `I brush my teeth every ............... I wanted to sleep early.`,
+      options: ["or", "and", "but", "because"],
+      correct: 3,
+      explanation: `The correct answer is 'because' because it explains the reason.`
+    }
+  },
+  {
+    id: 11,
+    ar: {
+      question: `We went to the gym ............... we wanted to play football.`,
+      options: ["but", "because", "or", "and"],
+      correct: 0,
+      explanation: `The correct answer is 'because' because it explains the reason.`
+    },
+    en: {
+      question: `We went to the gym ............... we wanted to play football.`,
+      options: ["but", "because", "or", "and"],
+      correct: 0,
+      explanation: `The correct answer is 'because' because it explains the reason.`
+    }
+  },
+  {
+    id: 12,
+    ar: {
+      question: `She wanted to read a book ............... she was too tired.`,
+      options: ["but", "and", "so", "or"],
+      correct: 0,
+      explanation: `The correct answer is 'but' because it indicates a contrast.`
+    },
+    en: {
+      question: `She wanted to read a book ............... she was too tired.`,
+      options: ["but", "and", "so", "or"],
+      correct: 0,
+      explanation: `The correct answer is 'but' because it indicates a contrast.`
+    }
+  },
+  {
+    id: 13,
+    ar: {
+      question: `You can drink milk ............... fresh juice for breakfast.`,
+      options: ["but", "because", "and", "or"],
+      correct: 3,
+      explanation: `The correct answer is 'or' because it offers alternatives.`
+    },
+    en: {
+      question: `You can drink milk ............... fresh juice for breakfast.`,
+      options: ["but", "because", "and", "or"],
+      correct: 3,
+      explanation: `The correct answer is 'or' because it offers alternatives.`
+    }
+  },
+  {
+    id: 14,
+    ar: {
+      question: `I finished my homework, ............... I helped with the dishes.`,
+      options: ["sometimes", "and", "because", "or"],
+      correct: 1,
+      explanation: `The correct answer is 'and' because it connects two actions.`
+    },
+    en: {
+      question: `I finished my homework, ............... I helped with the dishes.`,
+      options: ["sometimes", "and", "because", "or"],
+      correct: 1,
+      explanation: `The correct answer is 'and' because it connects two actions.`
+    }
+  },
+  {
+    id: 15,
+    ar: {
+      question: `Use a ............... instead of plastic.`,
+      options: ["tote bag", "box", "page", "bike"],
+      correct: 0,
+      explanation: `The correct answer is 'tote bag' because it's an eco-friendly alternative to plastic bags.`
+    },
+    en: {
+      question: `Use a ............... instead of plastic.`,
+      options: ["tote bag", "box", "page", "bike"],
+      correct: 0,
+      explanation: `The correct answer is 'tote bag' because it's an eco-friendly alternative to plastic bags.`
+    }
+  },
+  {
+    id: 16,
+    ar: {
+      question: `He doesn't like apples ............... does he like grapes.`,
+      options: ["as", "so", "or", "and"],
+      correct: 2,
+      explanation: `The correct answer is 'or' because it offers alternatives.`
+    },
+    en: {
+      question: `He doesn't like apples ............... does he like grapes.`,
+      options: ["as", "so", "or", "and"],
+      correct: 2,
+      explanation: `The correct answer is 'or' because it offers alternatives.`
+    }
+  },
+  {
+    id: 17,
+    ar: {
+      question: `Always throw litter in the ...............`,
+      options: ["box", "bin", "street", "page"],
+      correct: 1,
+      explanation: `The correct answer is 'bin' because it's where litter should be thrown.`
+    },
+    en: {
+      question: `Always throw litter in the ...............`,
+      options: ["box", "bin", "street", "page"],
+      correct: 1,
+      explanation: `The correct answer is 'bin' because it's where litter should be thrown.`
+    }
+  },
+  {
+    id: 18,
+    ar: {
+      question: `Fishing in ............... is good for the planet.`,
+      options: ["lake", "sea", "ocean", "boat"],
+      correct: 0,
+      explanation: `The correct answer is 'lake' because sustainable fishing in lakes can be good for the planet.`
+    },
+    en: {
+      question: `Fishing in ............... is good for the planet.`,
+      options: ["lake", "sea", "ocean", "boat"],
+      correct: 0,
+      explanation: `The correct answer is 'lake' because sustainable fishing in lakes can be good for the planet.`
+    }
+  },
+  {
+    id: 19,
+    ar: {
+      question: `Planting a lot ............... helps reduce pollution.`,
+      options: ["street", "page", "tree", "bag"],
+      correct: 2,
+      explanation: `The correct answer is 'tree' because planting trees helps reduce pollution.`
+    },
+    en: {
+      question: `Planting a lot ............... helps reduce pollution.`,
+      options: ["street", "page", "tree", "bag"],
+      correct: 2,
+      explanation: `The correct answer is 'tree' because planting trees helps reduce pollution.`
+    }
+  },
+  {
+    id: 20,
+    ar: {
+      question: `Recycling helps keep the planet ...............`,
+      options: ["green", "dirty", "red", "small"],
+      correct: 0,
+      explanation: `The correct answer is 'green' because recycling helps keep the planet clean and green.`
+    },
+    en: {
+      question: `Recycling helps keep the planet ...............`,
+      options: ["green", "dirty", "red", "small"],
+      correct: 0,
+      explanation: `The correct answer is 'green' because recycling helps keep the planet clean and green.`
+    }
+  }
+];
+
+        // ==================== STATE ====================
+        let currentLang = 'ar';
+        let isDark = false;
+        let allQuestions = [];
+        let currentQIndex = 0;
+        let score = 0;
+        let wrongQuestions = [];
+        let timerInterval = null;
+        let timeLeft = 20;
+        const TIME_PER_QUESTION = 20;
+        let answered = false;
+        let isReviewMode = false;
+        let quizActive = false;
+        let originalQuestions = [...QUIZ_DATA];
+
+        let quizConfig = {
+            displayMode: 'single',
+            timePerQuestion: 20,
+            pauseAvailable: true,
+            totalTime: 0,
+        };
+        let multiAnswers = [];
+        let isPaused = false;
+
+        // ==================== UTILS ====================
+        function shuffle(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function t(key) {
+            const lang = currentLang;
+            const dict = {
+                ar: {
+                    title: '🧠 ماستر الكويز',
+                    mainTitle: '🎓 Quiz — 20 Questions',
+                    mainSub: 'تم إنشاؤه بواسطة Quiz Bot | English Grammar, Environmental Science',
+                    next: '⏭ التالي',
+                    correct: '✅ إجابة صحيحة!',
+                    wrong: '❌ إجابة خاطئة',
+                    timeUp: '⏰ انتهى الوقت!',
+                    outOf: 'من',
+                    correctStat: '✅ صحيح',
+                    wrongStat: '❌ خطأ',
+                    skippedStat: '⏰ انتهى الوقت',
+                    reviewHeader: '📝 الأسئلة الخاطئة',
+                    retryWrong: '🔁 إعادة الأخطاء فقط',
+                    retryAll: '🔄 إعادة الكويز كامل',
+                    noMistakes: 'لا توجد أخطاء، عمل رائع! 🎉',
+                    copied: 'تم نسخ السؤال! الصقه في الشات 💬',
+                    setupTitle: '⚙️ إعدادات الكويز',
+                    displayModeLabel: 'طريقة عرض الأسئلة',
+                    single: 'سؤال سؤال',
+                    all: 'جميع الأسئلة في صفحة واحدة',
+                    timeLabel: 'الوقت لكل سؤال',
+                    unlimited: 'بدون زمن محدد',
+                    start: 'ابدأ الكويز',
+                    pauseTip: 'إيقاف مؤقت / استئناف',
+                    submitAll: 'تسليم الكل',
+                    timeHintSingle: 'سيتم تطبيق هذا الوقت على كل سؤال على حدة.',
+                    timeHintAll: 'سيتم ضرب الوقت في عدد الأسئلة لتحديد الزمن الكلي للصفحة.'
+                },
+                en: {
+                    title: '🧠 Quiz Master',
+                    mainTitle: '🎓 Quiz Master',
+                    mainSub: 'Test your knowledge and enjoy the challenge!',
+                    next: '⏭ Next',
+                    correct: '✅ Correct!',
+                    wrong: '❌ Wrong',
+                    timeUp: '⏰ Time\'s Up!',
+                    outOf: 'out of',
+                    correctStat: '✅ Correct',
+                    wrongStat: '❌ Wrong',
+                    skippedStat: '⏰ Time Up',
+                    reviewHeader: '📝 Wrong Answers',
+                    retryWrong: '🔁 Retry Mistakes Only',
+                    retryAll: '🔄 Retry Full Quiz',
+                    noMistakes: 'No mistakes, great job! 🎉',
+                    copied: 'Question copied! Paste in chat 💬',
+                    setupTitle: '⚙️ Quiz Settings',
+                    displayModeLabel: 'Display Mode',
+                    single: 'One by one',
+                    all: 'All questions on one page',
+                    timeLabel: 'Time per question',
+                    unlimited: 'No time limit',
+                    start: 'Start Quiz',
+                    pauseTip: 'Pause / Resume',
+                    submitAll: 'Submit All',
+                    timeHintSingle: 'This time will apply to each question separately.',
+                    timeHintAll: 'The time will be multiplied by the number of questions for total page time.'
+                }
+            };
+            return dict[lang] && dict[lang][key] ? dict[lang][key] : key;
+        }
+
+        // ==================== DOM REFS ====================
+        const $mainView = document.getElementById('main-view');
+        const $summaryView = document.getElementById('summary-view');
+        const $questionCard = document.getElementById('question-card');
+        const $qNum = document.getElementById('q-num');
+        const $qText = document.getElementById('q-text');
+        const $optionsContainer = document.getElementById('options-container');
+        const $explanationBox = document.getElementById('explanation-box');
+        const $expBody = document.getElementById('exp-body');
+        const $aiButtons = document.getElementById('ai-buttons');
+        const $nextControls = document.getElementById('next-controls');
+        const $nextBtn = document.getElementById('next-btn');
+        const $timerDisplay = document.getElementById('timer-display');
+        const $ringFill = document.getElementById('ring-fill');
+        const $ringAnswered = document.getElementById('ring-answered');
+        const $ringTotal = document.getElementById('ring-total');
+        const $scoreTop = document.getElementById('score-top');
+        const $toast = document.getElementById('toast');
+        const $confettiCanvas = document.getElementById('confetti-canvas');
+        const ctxCanvas = $confettiCanvas.getContext('2d');
+        const $darkToggle = document.getElementById('dark-toggle');
+        const $langToggle = document.getElementById('lang-toggle');
+        const $pauseBtn = document.getElementById('pause-btn');
+        const $multiContainer = document.getElementById('multi-question-container');
+        const $submitAllControls = document.getElementById('submit-all-controls');
+        const $setupView = document.getElementById('setup-view');
+        const $displayModeSelect = document.getElementById('display-mode');
+        const $timeSelect = document.getElementById('time-select');
+        const $timeHint = document.getElementById('time-hint');
+        const $startQuizBtn = document.getElementById('start-quiz-btn');
+        let audioCtx = null;
+        let confettiParticles = [];
+        let confettiAnimId = null;
+
+        // ==================== AUDIO ====================
+        function getAudioCtx() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            try {
+                const ac = getAudioCtx();
+                const now = ac.currentTime;
+                if (type === 'correct') {
+                    [523.25, 659.25, 783.99].forEach((freq, i) => {
+                        const osc = ac.createOscillator();
+                        const gain = ac.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.value = freq;
+                        gain.gain.setValueAtTime(0.25, now + i * 0.1);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.25);
+                        osc.connect(gain);
+                        gain.connect(ac.destination);
+                        osc.start(now + i * 0.1);
+                        osc.stop(now + i * 0.1 + 0.25);
+                    });
+                } else if (type === 'wrong') {
+                    const osc = ac.createOscillator();
+                    const gain = ac.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.value = 150;
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.connect(gain);
+                    gain.connect(ac.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                }
+            } catch (e) {}
+        }
+
+        function spawnConfetti() {
+            const cx = window.innerWidth / 2;
+            const cy = window.innerHeight * 0.4;
+            const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff922b', '#845ef7'];
+            for (let i = 0; i < 80; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 3 + Math.random() * 8;
+                confettiParticles.push({
+                    x: cx, y: cy,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - Math.random() * 5,
+                    size: 4 + Math.random() * 7,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rotation: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 10,
+                    life: 1,
+                    decay: 0.008 + Math.random() * 0.02,
+                    gravity: 0.15,
+                });
+            }
+            if (!confettiAnimId) animateConfetti();
+        }
+
+        function animateConfetti() {
+            ctxCanvas.clearRect(0, 0, $confettiCanvas.width, $confettiCanvas.height);
+            let anyAlive = false;
+            confettiParticles.forEach(p => {
+                if (p.life <= 0) return;
+                anyAlive = true;
+                p.x += p.vx;
+                p.vy += p.gravity;
+                p.y += p.vy;
+                p.rotation += p.rotSpeed;
+                p.life -= p.decay;
+                ctxCanvas.save();
+                ctxCanvas.translate(p.x, p.y);
+                ctxCanvas.rotate((p.rotation * Math.PI) / 180);
+                ctxCanvas.globalAlpha = Math.max(0, p.life);
+                ctxCanvas.fillStyle = p.color;
+                ctxCanvas.fillRect(-p.size / 2, -p.size / 3, p.size, p.size * 0.6);
+                ctxCanvas.restore();
+            });
+            confettiParticles = confettiParticles.filter(p => p.life > 0);
+            if (anyAlive) {
+                confettiAnimId = requestAnimationFrame(animateConfetti);
+            } else {
+                confettiAnimId = null;
+                ctxCanvas.clearRect(0, 0, $confettiCanvas.width, $confettiCanvas.height);
+            }
+        }
+
+        function showToast(msg) {
+            $toast.textContent = msg;
+            $toast.classList.add('show');
+            clearTimeout($toast._timeout);
+            $toast._timeout = setTimeout(() => $toast.classList.remove('show'), 2000);
+        }
+
+        function resizeCanvas() {
+            $confettiCanvas.width = window.innerWidth;
+            $confettiCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // ==================== QUIZ FLOW ====================
+        function startQuiz(questionSet = null, config = null) {
+            if (config) quizConfig = { ...quizConfig, ...config };
+            const source = questionSet || [...QUIZ_DATA];
+            allQuestions = shuffle(source.map(q => ({ ...q })));
+            currentQIndex = 0;
+            score = 0;
+            wrongQuestions = [];
+            answered = false;
+            quizActive = true;
+            isReviewMode = !!questionSet;
+            multiAnswers = new Array(allQuestions.length).fill(-1);
+
+            updateScoreDisplay();
+            updateProgressRing();
+            showMainView();
+
+            if (quizConfig.displayMode === 'all') {
+                $questionCard.style.display = 'none';
+                $nextControls.style.display = 'none';
+                $multiContainer.style.display = 'block';
+                $submitAllControls.style.display = 'flex';
+                renderAllQuestions();
+                startGlobalTimer();
+                $pauseBtn.style.display = (quizConfig.timePerQuestion > 0 ? 'inline-flex' : 'none');
+            } else {
+                $questionCard.style.display = 'block';
+                $multiContainer.style.display = 'none';
+                $submitAllControls.style.display = 'none';
+                renderQuestion();
+                startTimer();
+                $pauseBtn.style.display = (quizConfig.timePerQuestion > 0 ? 'inline-flex' : 'none');
+                $nextControls.style.display = 'none';
+                $aiButtons.style.display = 'none';
+                $explanationBox.classList.remove('show');
+            }
+            $pauseBtn.textContent = '⏸️';
+            isPaused = false;
+        }
+
+        function renderQuestion() {
+            if (currentQIndex >= allQuestions.length) {
+                endQuiz();
+                return;
+            }
+            answered = false;
+            const q = allQuestions[currentQIndex];
+            const localized = q[currentLang] || q.ar;
+            $qNum.textContent = `السؤال ${currentQIndex+1}`;
+            if (currentLang === 'en') $qNum.textContent = `Question ${currentQIndex+1}`;
+            $qText.textContent = localized.question;
+
+            const shuffledOptions = shuffle(localized.options.map((text, idx) => ({ text, originalIndex: idx })));
+            q._shuffled = shuffledOptions;
+            q._correctIdx = localized.correct;
+
+            const letters = currentLang === 'ar' ? ['أ', 'ب', 'ج', 'د', 'هـ', 'و'] : ['A', 'B', 'C', 'D', 'E', 'F'];
+            $optionsContainer.innerHTML = '';
+            shuffledOptions.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'opt-btn';
+                btn.innerHTML = `<span class="opt-key">${letters[i]}</span><span>${opt.text}</span><span class="opt-icon">✓</span>`;
+                btn.addEventListener('click', () => selectOption(i, btn));
+                $optionsContainer.appendChild(btn);
+            });
+
+            $explanationBox.classList.remove('show');
+            $aiButtons.style.display = 'none';
+            $nextControls.style.display = 'none';
+            $questionCard.classList.remove('card-correct', 'card-wrong');
+            resetTimer();
+            updateProgressRing();
+        }
+
+        function selectOption(shuffledIndex, btn) {
+            if (answered) return;
+            answered = true;
+            clearInterval(timerInterval);
+            const q = allQuestions[currentQIndex];
+            const correctOriginal = q._correctIdx;
+            const selectedOriginal = q._shuffled[shuffledIndex].originalIndex;
+            const isCorrect = (selectedOriginal === correctOriginal);
+
+            const allBtns = $optionsContainer.querySelectorAll('.opt-btn');
+            allBtns.forEach((b, i) => {
+                b.disabled = true;
+                const orig = q._shuffled[i].originalIndex;
+                if (orig === correctOriginal) b.classList.add('correct');
+                if (i === shuffledIndex && !isCorrect) b.classList.add('incorrect');
+            });
+
+            if (isCorrect) {
+                score++;
+                playSound('correct');
+                spawnConfetti();
+                $questionCard.classList.add('card-correct');
+            } else {
+                playSound('wrong');
+                $questionCard.classList.add('card-wrong');
+                wrongQuestions.push({ ...q, userAnswer: selectedOriginal });
+            }
+            updateScoreDisplay();
+            showExplanation(q);
+            $aiButtons.style.display = 'flex';
+            $nextControls.style.display = 'flex';
+            updateProgressRing();
+        }
+
+        function timeUp() {
+            if (answered) return;
+            answered = true;
+            clearInterval(timerInterval);
+            const q = allQuestions[currentQIndex];
+            const correctOriginal = q._correctIdx;
+            const allBtns = $optionsContainer.querySelectorAll('.opt-btn');
+            allBtns.forEach((b, i) => {
+                b.disabled = true;
+                if (q._shuffled[i].originalIndex === correctOriginal) b.classList.add('correct');
+            });
+            playSound('wrong');
+            $questionCard.classList.add('card-wrong');
+            wrongQuestions.push({ ...q, userAnswer: -1 });
+            showExplanation(q);
+            $aiButtons.style.display = 'flex';
+            $nextControls.style.display = 'flex';
+            updateProgressRing();
+            updateScoreDisplay();
+        }
+
+        function showExplanation(q) {
+            const localized = q[currentLang] || q.ar;
+            $expBody.textContent = localized.explanation || 'لا يوجد شرح';
+            $explanationBox.classList.add('show');
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            if (currentQIndex >= allQuestions.length) {
+                endQuiz();
+            } else {
+                renderQuestion();
+                startTimer();
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            if (quizConfig.timePerQuestion <= 0) {
+                $timerDisplay.textContent = '∞';
+                $timerDisplay.classList.remove('warning', 'danger');
+                return;
+            }
+            timeLeft = quizConfig.timePerQuestion;
+            updateTimerDisplay();
+            $timerDisplay.classList.remove('warning', 'danger');
+            timerInterval = setInterval(() => {
+                if (isPaused) return;
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 5 && timeLeft > 2) {
+                    $timerDisplay.classList.add('warning');
+                    $timerDisplay.classList.remove('danger');
+                } else if (timeLeft <= 2 && timeLeft > 0) {
+                    $timerDisplay.classList.remove('warning');
+                    $timerDisplay.classList.add('danger');
+                }
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    $timerDisplay.classList.add('danger');
+                    timeUp();
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timeLeft = quizConfig.timePerQuestion;
+            updateTimerDisplay();
+            $timerDisplay.classList.remove('warning', 'danger');
+            startTimer();
+        }
+
+        function updateTimerDisplay() {
+            if (quizConfig.timePerQuestion <= 0) {
+                $timerDisplay.textContent = '∞';
+                return;
+            }
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            $timerDisplay.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            if (timeLeft <= 0) $timerDisplay.textContent = '0:00';
+        }
+
+        function updateScoreDisplay() {
+            $scoreTop.textContent = score;
+        }
+
+        function updateProgressRing() {
+            const total = allQuestions.length;
+            const answeredCount = currentQIndex + (answered ? 1 : 0);
+            const pct = total ? (answeredCount / total) * 100 : 0;
+            const circumference = 113;
+            const offset = circumference - (pct / 100) * circumference;
+            $ringFill.style.strokeDashoffset = offset;
+            $ringAnswered.textContent = answeredCount;
+            $ringTotal.textContent = '/' + total;
+        }
+
+        function endQuiz() {
+            clearInterval(timerInterval);
+            quizActive = false;
+            $pauseBtn.style.display = 'none';
+            showSummaryView();
+            renderSummary();
+        }
+
+        function showMainView() {
+            $mainView.style.display = 'block';
+            $summaryView.style.display = 'none';
+        }
+
+        function showSummaryView() {
+            $mainView.style.display = 'none';
+            $summaryView.style.display = 'block';
+        }
+
+        function renderSummary() {
+            const total = allQuestions.length;
+            const correct = score;
+            const wrong = wrongQuestions.length;
+            const skipped = total - correct - wrong;
+            const pct = Math.round((correct / total) * 100) || 0;
+
+            document.getElementById('final-score').textContent = correct;
+            document.getElementById('final-outof').textContent = `${t('outOf')} ${total}`;
+            document.getElementById('final-pct').textContent = pct + '%';
+            document.getElementById('stat-correct').textContent = correct;
+            document.getElementById('stat-wrong').textContent = wrong;
+            document.getElementById('stat-skipped').textContent = skipped;
+
+            const reviewSection = document.getElementById('review-section');
+            const reviewBtn = document.getElementById('review-mistakes-btn');
+            if (wrongQuestions.length === 0) {
+                reviewSection.innerHTML = `<p style="text-align:center; padding:20px;">${t('noMistakes')}</p>`;
+                reviewBtn.style.display = 'none';
+            } else {
+                reviewBtn.style.display = 'inline-flex';
+                let html = `<div class="review-header">${t('reviewHeader')}</div>`;
+                wrongQuestions.forEach(q => {
+                    const loc = q[currentLang] || q.ar;
+                    const correctText = loc.options[loc.correct];
+                    const userText = q.userAnswer >= 0 ? loc.options[q.userAnswer] : '—';
+                    html += `<div class="review-item">
+                        <div class="review-q">${loc.question}</div>
+                        <div class="review-yours">❌ إجابتك: ${userText}</div>
+                        <div class="review-correct">✓ الإجابة الصحيحة: ${correctText}</div>
+                        <div class="review-exp">${loc.explanation || ''}</div>
+                    </div>`;
+                });
+                reviewSection.innerHTML = html;
+            }
+        }
+
+        function startMistakeReview() {
+            if (wrongQuestions.length === 0) {
+                showToast(t('noMistakes'));
+                return;
+            }
+            startQuiz(wrongQuestions.map(q => ({ ...q, id: q.id })), quizConfig);
+        }
+
+        function restartFullQuiz() {
+            clearInterval(timerInterval);
+            startQuiz(null, quizConfig);
+        }
+
+        // ==================== MULTI MODE ====================
+        function renderAllQuestions() {
+            $multiContainer.innerHTML = '';
+            const letters = currentLang === 'ar' ? ['أ', 'ب', 'ج', 'د', 'هـ', 'و'] : ['A', 'B', 'C', 'D', 'E', 'F'];
+            allQuestions.forEach((q, idx) => {
+                const loc = q[currentLang] || q.ar;
+                const card = document.createElement('div');
+                card.className = 'q-card';
+                card.id = `multi-card-${idx}`;
+                const shuffled = shuffle(loc.options.map((text, i) => ({ text, originalIndex: i })));
+                q._shuffled = shuffled;
+                q._correctIdx = loc.correct;
+                let optionsHtml = '';
+                shuffled.forEach((opt, i) => {
+                    optionsHtml += `<button class="opt-btn" data-qidx="${idx}" data-shuffled="${i}" data-orig="${opt.originalIndex}">
+                        <span class="opt-key">${letters[i]}</span><span>${opt.text}</span><span class="opt-icon">✓</span>
+                    </button>`;
+                });
+                card.innerHTML = `
+                    <div class="q-header">
+                        <span class="q-num">سؤال ${idx+1}</span>
+                        <div class="q-text">${loc.question}</div>
+                    </div>
+                    <div class="q-options" id="multi-options-${idx}">${optionsHtml}</div>
+                    <div class="explanation-box" id="multi-exp-box-${idx}" style="display:none;">
+                        <div class="explanation-label">💡 الشرح</div>
+                        <div class="exp-body" id="multi-exp-body-${idx}"></div>
+                    </div>
+                    <div class="ai-buttons" id="multi-ai-${idx}" style="display:none;">
+                        <button class="ai-btn" onclick="askAIForMulti(${idx}, 'chatgpt')">🤖 ChatGPT</button>
+                        <button class="ai-btn" onclick="askAIForMulti(${idx}, 'gemini')">✨ Gemini</button>
+                        <button class="ai-btn" onclick="askAIForMulti(${idx}, 'deepseek')">🧠 DeepSeek</button>
+                    </div>
+                `;
+                $multiContainer.appendChild(card);
+            });
+
+            $multiContainer.querySelectorAll('.opt-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const qIdx = parseInt(this.dataset.qidx);
+                    const shuffledIdx = parseInt(this.dataset.shuffled);
+                    const origIdx = parseInt(this.dataset.orig);
+                    if (multiAnswers[qIdx] !== -1) return;
+                    multiAnswers[qIdx] = origIdx;
+                    const optionsDiv = document.getElementById(`multi-options-${qIdx}`);
+                    const allBtns = optionsDiv.querySelectorAll('.opt-btn');
+                    const q = allQuestions[qIdx];
+                    const isCorrect = (origIdx === q._correctIdx);
+                    allBtns.forEach((b, i) => {
+                        b.disabled = true;
+                        const bOrig = parseInt(b.dataset.orig);
+                        if (bOrig === q._correctIdx) b.classList.add('correct');
+                        if (i === shuffledIdx && !isCorrect) b.classList.add('incorrect');
+                    });
+                    const expBox = document.getElementById(`multi-exp-box-${qIdx}`);
+                    const expBody = document.getElementById(`multi-exp-body-${qIdx}`);
+                    const loc = q[currentLang] || q.ar;
+                    expBody.textContent = loc.explanation || 'لا يوجد شرح';
+                    expBox.style.display = 'block';
+                    const card = document.getElementById(`multi-card-${qIdx}`);
+                    if (isCorrect) {
+                        card.classList.add('card-correct');
+                        playSound('correct');
+                        spawnConfetti();
+                    } else {
+                        card.classList.add('card-wrong');
+                        playSound('wrong');
+                    }
+                    const aiDiv = document.getElementById(`multi-ai-${qIdx}`);
+                    if (aiDiv) aiDiv.style.display = 'flex';
+                    updateProgressRingForMulti();
+                });
+            });
+            updateProgressRingForMulti();
+        }
+
+        function updateProgressRingForMulti() {
+            const total = allQuestions.length;
+            const answeredCount = multiAnswers.filter(a => a !== -1).length;
+            const pct = total ? (answeredCount / total) * 100 : 0;
+            const circumference = 113;
+            const offset = circumference - (pct / 100) * circumference;
+            $ringFill.style.strokeDashoffset = offset;
+            $ringAnswered.textContent = answeredCount;
+            $ringTotal.textContent = '/' + total;
+        }
+
+        function startGlobalTimer() {
+            clearInterval(timerInterval);
+            if (quizConfig.timePerQuestion <= 0) {
+                $timerDisplay.textContent = '∞';
+                $timerDisplay.classList.remove('warning', 'danger');
+                return;
+            }
+            timeLeft = quizConfig.timePerQuestion * allQuestions.length;
+            updateTimerDisplay();
+            $timerDisplay.classList.remove('warning', 'danger');
+            timerInterval = setInterval(() => {
+                if (isPaused) return;
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 10 && timeLeft > 3) {
+                    $timerDisplay.classList.add('warning');
+                    $timerDisplay.classList.remove('danger');
+                } else if (timeLeft <= 3 && timeLeft > 0) {
+                    $timerDisplay.classList.remove('warning');
+                    $timerDisplay.classList.add('danger');
+                }
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    $timerDisplay.classList.add('danger');
+                    submitAllQuestions(true);
+                }
+            }, 1000);
+        }
+
+        function submitAllQuestions(timedOut = false) {
+            if (!quizActive) return;
+            quizActive = false;
+            clearInterval(timerInterval);
+            $pauseBtn.style.display = 'none';
+            allQuestions.forEach((q, idx) => {
+                if (multiAnswers[idx] === -1) {
+                    const optionsDiv = document.getElementById(`multi-options-${idx}`);
+                    if (optionsDiv) {
+                        const allBtns = optionsDiv.querySelectorAll('.opt-btn');
+                        allBtns.forEach(b => {
+                            b.disabled = true;
+                            const bOrig = parseInt(b.dataset.orig);
+                            if (bOrig === q._correctIdx) b.classList.add('correct');
+                        });
+                    }
+                    wrongQuestions.push({ ...q, userAnswer: -1 });
+                } else {
+                    if (multiAnswers[idx] === q._correctIdx) {
+                        score++;
+                    } else {
+                        wrongQuestions.push({ ...q, userAnswer: multiAnswers[idx] });
+                    }
+                }
+                const card = document.getElementById(`multi-card-${idx}`);
+                if (card) {
+                    if (multiAnswers[idx] === q._correctIdx) {
+                        card.classList.add('card-correct');
+                    } else if (multiAnswers[idx] !== -1) {
+                        card.classList.add('card-wrong');
+                    } else {
+                        card.classList.add('card-wrong'); // unanswered
+                    }
+                }
+                const expBox = document.getElementById(`multi-exp-box-${idx}`);
+                const expBody = document.getElementById(`multi-exp-body-${idx}`);
+                if (expBox && expBody) {
+                    const loc = q[currentLang] || q.ar;
+                    expBody.textContent = loc.explanation || 'لا يوجد شرح';
+                    expBox.style.display = 'block';
+                }
+                const aiDiv = document.getElementById(`multi-ai-${idx}`);
+                if (aiDiv) aiDiv.style.display = 'flex';
+            });
+            updateScoreDisplay();
+            updateProgressRingForMulti();
+            if (timedOut) playSound('wrong');
+            setTimeout(() => endQuiz(), 500);
+        }
+
+        function askAIForMulti(qIdx, service) {
+            const q = allQuestions[qIdx];
+            if (!q) return;
+            const loc = q[currentLang] || q.ar;
+            const text = loc.question;
+            const encoded = encodeURIComponent(text);
+            let url = '';
+            if (service === 'chatgpt') url = `https://chatgpt.com/?q=${encoded}`;
+            else if (service === 'gemini') url = `https://gemini.google.com/app?q=${encoded}`;
+            else if (service === 'deepseek') url = `https://chat.deepseek.com/?q=${encoded}`;
+            navigator.clipboard?.writeText(text).catch(() => {});
+            showToast(t('copied'));
+            setTimeout(() => window.open(url, '_blank', 'noopener'), 300);
+        }
+
+        // ==================== PAUSE ====================
+        function togglePause() {
+            if (!quizActive || quizConfig.timePerQuestion <= 0) return;
+            isPaused = !isPaused;
+            $pauseBtn.textContent = isPaused ? '▶️' : '⏸️';
+            if (isPaused) {
+                clearInterval(timerInterval);
+            } else {
+                if (quizConfig.displayMode === 'all') {
+                    startGlobalTimer();
+                } else {
+                    startTimer();
+                }
+            }
+        }
+        $pauseBtn.addEventListener('click', togglePause);
+
+        // ==================== SETUP SCREEN ====================
+        function updateSetupHint() {
+            const mode = $displayModeSelect.value;
+            const hintEl = $timeHint;
+            if (mode === 'all') {
+                hintEl.textContent = t('timeHintAll');
+            } else {
+                hintEl.textContent = t('timeHintSingle');
+            }
+        }
+        $displayModeSelect.addEventListener('change', updateSetupHint);
+        $timeSelect.addEventListener('change', updateSetupHint);
+
+        function applySetupLanguage() {
+            document.getElementById('setup-title').textContent = t('setupTitle');
+            document.getElementById('lbl-display').textContent = t('displayModeLabel');
+            document.getElementById('lbl-time').textContent = t('timeLabel');
+            const modeSelect = document.getElementById('display-mode');
+            modeSelect.options[0].text = t('single');
+            modeSelect.options[1].text = t('all');
+            const timeSelect = document.getElementById('time-select');
+            const timeOptions = timeSelect.options;
+            for (let i = 0; i < timeOptions.length - 1; i++) {
+                if (currentLang === 'en') {
+                    const val = timeOptions[i].value;
+                    const enTexts = { '10': '10 sec', '20': '20 sec', '40': '40 sec', '60': '1 min', '120': '2 min', '180': '3 min', '240': '4 min', '300': '5 min' };
+                    timeOptions[i].textContent = enTexts[val] || val + ' sec';
+                } else {
+                    const arTexts = { '10': '10 ثوان', '20': '20 ثانية', '40': '40 ثانية', '60': '1 دقيقة', '120': '2 دقيقتان', '180': '3 دقائق', '240': '4 دقائق', '300': '5 دقائق' };
+                    timeOptions[i].textContent = arTexts[timeOptions[i].value] || timeOptions[i].value + ' ثانية';
+                }
+            }
+            if (currentLang === 'en') {
+                timeOptions[timeOptions.length-1].textContent = 'No time limit';
+            } else {
+                timeOptions[timeOptions.length-1].textContent = 'بدون زمن محدد';
+            }
+            document.getElementById('start-quiz-btn').textContent = t('start');
+            updateSetupHint();
+        }
+
+        function showSetup() {
+            $mainView.style.display = 'none';
+            $summaryView.style.display = 'none';
+            $setupView.style.display = 'flex';
+            applySetupLanguage();
+        }
+
+        $startQuizBtn.addEventListener('click', () => {
+            const displayMode = $displayModeSelect.value;
+            const timeVal = parseInt($timeSelect.value, 10);
+            const config = {
+                displayMode: displayMode,
+                timePerQuestion: timeVal,
+            };
+            $setupView.style.display = 'none';
+            startQuiz(null, config);
+        });
+
+        // ==================== LANGUAGE & DARK ====================
+        function applyLanguage() {
+            document.body.classList.toggle('lang-en', currentLang === 'en');
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            $langToggle.textContent = currentLang === 'ar' ? '🇸🇦 عربي' : '🇬🇧 English';
+            document.getElementById('app-title').textContent = t('title');
+            document.getElementById('main-title').textContent = t('mainTitle');
+            document.getElementById('main-sub').textContent = t('mainSub');
+            if (quizActive && allQuestions.length > 0) {
+                if (quizConfig.displayMode === 'all') {
+                    renderAllQuestions();
+                } else {
+                    renderQuestion();
+                }
+                updateTimerDisplay();
+            }
+            if ($summaryView.style.display !== 'none') renderSummary();
+            $nextBtn.textContent = t('next');
+            applySetupLanguage();
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            applyLanguage();
+        }
+
+        function toggleDarkMode() {
+            isDark = !isDark;
+            document.body.classList.toggle('dark', isDark);
+            $darkToggle.textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('quizDark', isDark ? '1' : '0');
+        }
+
+        function loadDarkPref() {
+            if (localStorage.getItem('quizDark') === '1') {
+                isDark = true;
+                document.body.classList.add('dark');
+                $darkToggle.textContent = '☀️';
+            }
+        }
+
+        // ==================== AI ASK (single mode) ====================
+        function askAI(service) {
+            if (!quizActive || !allQuestions[currentQIndex]) return;
+            const q = allQuestions[currentQIndex];
+            const loc = q[currentLang] || q.ar;
+            const text = loc.question;
+            const encoded = encodeURIComponent(text);
+            let url = '';
+            if (service === 'chatgpt') url = `https://chatgpt.com/?q=${encoded}`;
+            else if (service === 'gemini') url = `https://gemini.google.com/app?q=${encoded}`;
+            else if (service === 'deepseek') url = `https://chat.deepseek.com/?q=${encoded}`;
+            navigator.clipboard?.writeText(text).catch(() => {});
+            showToast(t('copied'));
+            setTimeout(() => window.open(url, '_blank', 'noopener'), 300);
+        }
+
+        // ==================== INIT ====================
+        function init() {
+            loadDarkPref();
+            applyLanguage();
+            showSetup();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (!quizActive) return;
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+                if (quizConfig.displayMode === 'single' && answered && $nextControls.style.display !== 'none') {
+                    e.preventDefault();
+                    nextQuestion();
+                }
+            }
+            if (!answered && quizConfig.displayMode === 'single') {
+                const keys = currentLang === 'ar' ? ['1', '2', '3', '4', '5', '6'] : ['1', '2', '3', '4', '5', '6'];
+                const idx = keys.indexOf(e.key);
+                if (idx >= 0) {
+                    const btns = $optionsContainer.querySelectorAll('.opt-btn');
+                    if (btns[idx]) btns[idx].click();
+                }
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>
