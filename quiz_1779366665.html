@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEMPLATE — Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #007c73; --teal-dark: #005a53; --teal-light: #e0f5f3; --teal-mid: #b2dfdb;
+    --red: #c0392b; --red-light: #fdecea; --green: #1a7a4a; --green-light: #e6f6ee;
+    --amber: #b45309; --amber-light: #fef3c7;
+    --gray-50: #f8fafb; --gray-100: #f0f4f5; --gray-200: #dde5e7;
+    --gray-400: #8fa5ab; --gray-600: #4a6570; --gray-800: #1e3340;
+    --radius: 14px;
+    --shadow-sm: 0 1px 4px rgba(0,0,0,0.07);
+    --shadow: 0 4px 16px rgba(0,0,0,0.09);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--gray-100); color: var(--gray-800); min-height: 100vh; }
+
+  /* ── TOP BAR ── */
+  .topbar { position: sticky; top: 0; z-index: 100; background: white; border-bottom: 1px solid var(--gray-200); padding: 0 24px; display: flex; align-items: center; gap: 16px; height: 60px; box-shadow: var(--shadow-sm); }
+  .topbar-title { font-family: 'DM Serif Display', serif; font-size: 1.1em; color: var(--teal-dark); flex-shrink: 0; }
+  .progress-wrap { flex: 1; display: flex; align-items: center; justify-content: center; }
+  .ring-wrap { position: relative; width: 44px; height: 44px; flex-shrink: 0; }
+  .ring-wrap svg { transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: var(--gray-200); stroke-width: 4; }
+  .ring-fill { fill: none; stroke: var(--teal); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 113; stroke-dashoffset: 113; transition: stroke-dashoffset 0.4s ease; }
+  .ring-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
+  .ring-answered { font-size: 0.82em; font-weight: 800; color: var(--teal-dark); }
+  .ring-total { font-size: 0.6em; color: var(--gray-400); }
+  .score-pill { background: var(--teal); color: white; font-weight: 700; font-size: 0.88em; padding: 5px 14px; border-radius: 99px; flex-shrink: 0; letter-spacing: 0.02em; }
+  #timer-display { font-size: 0.82em; font-weight: 700; color: var(--gray-600); font-variant-numeric: tabular-nums; letter-spacing: 0.03em; flex-shrink: 0; min-width: 48px; }
+  .topbar-icon-btn { background: none; border: none; cursor: pointer; font-size: 1.2em; padding: 4px 6px; border-radius: 8px; flex-shrink: 0; transition: background 0.15s; line-height: 1; }
+  .topbar-icon-btn:hover { background: var(--gray-100); }
+  .topbar-icon-group { display: flex; align-items: center; gap: 4px; }
+  #btn-skip-to-next { display: none; background: var(--teal); color: white; border: none; border-radius: 99px; padding: 5px 13px; font-size: 0.82em; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; white-space: nowrap; flex-shrink: 0; transition: background 0.15s, transform 0.1s; }
+  #btn-skip-to-next:hover { background: var(--teal-dark); transform: translateY(-1px); }
+
+  /* ── HEADER ── */
+  .header { background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 60%, #00b5a9 100%); color: white; padding: 48px 24px 40px; text-align: center; }
+  .header h1 { font-family: 'DM Serif Display', serif; font-size: 2.4em; letter-spacing: -0.01em; margin-bottom: 8px; }
+  .header p { opacity: 0.85; font-size: 1em; }
+  .header-stats { display: flex; justify-content: center; gap: 32px; margin-top: 24px; }
+  .hstat { text-align: center; }
+  .hstat-num { font-size: 1.8em; font-weight: 700; }
+  .hstat-label { font-size: 0.75em; opacity: 0.8; letter-spacing: 0.05em; text-transform: uppercase; }
+
+
+  /* ── CONTROLS ── */
+  .controls { display: flex; justify-content: center; gap: 12px; padding: 24px 16px 8px; flex-wrap: wrap; }
+  .btn { border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 600; border-radius: 99px; padding: 10px 22px; font-size: 0.92em; transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s; box-shadow: var(--shadow-sm); }
+  .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--teal); color: white; }
+  .btn-outline { background: white; color: var(--gray-600); border: 1.5px solid var(--gray-200); }
+
+  /* ── MAIN CONTENT ── */
+  #main-view { max-width: 800px; margin: 0 auto; padding: 16px 16px 120px; }
+
+  /* ── QUESTION CARD ── */
+  .q-card { background: white; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 20px; overflow: hidden; border: 1px solid var(--gray-200); transition: box-shadow 0.2s; }
+  .q-card:hover { box-shadow: var(--shadow-lg); }
+  .q-header { padding: 22px 24px 16px; border-bottom: 1px solid var(--gray-100); display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
+  .q-num { background: var(--teal-light); color: var(--teal-dark); font-weight: 700; font-size: 0.78em; padding: 4px 10px; border-radius: 99px; flex-shrink: 0; margin-top: 3px; letter-spacing: 0.04em; }
+  .q-text { font-size: 1.05em; font-weight: 600; color: var(--gray-800); line-height: 1.5; }
+  .q-options { padding: 16px 24px; display: grid; gap: 10px; }
+  .opt-btn { text-align: left; padding: 13px 18px; border: 2px solid var(--gray-200); border-radius: 10px; background: var(--gray-50); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.97em; color: var(--gray-600); transition: all 0.18s; width: 100%; display: flex; align-items: center; gap: 10px; user-select: text; -webkit-user-select: text; }
+  .opt-btn:hover:not(:disabled) { border-color: var(--teal); background: var(--teal-light); color: var(--teal-dark); transform: translateX(4px); }
+  .opt-btn:disabled { cursor: default; }
+  .opt-btn .opt-icon { font-size: 1.1em; flex-shrink: 0; opacity: 0; transition: opacity 0.2s; }
+  .opt-btn.correct { background: var(--green-light) !important; border-color: var(--green) !important; color: var(--green) !important; font-weight: 600; transform: none; }
+  .opt-btn.correct .opt-icon { opacity: 1; }
+  .opt-btn.incorrect { background: var(--red-light) !important; border-color: var(--red) !important; color: var(--red) !important; transform: none; }
+  .opt-btn.incorrect .opt-icon { opacity: 1; }
+  .opt-key { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 5px; background: var(--gray-100); border: 1px solid var(--gray-200); font-size: 0.72em; font-weight: 700; color: var(--gray-600); margin-right: 8px; flex-shrink: 0; font-family: monospace; transition: all 0.15s; }
+  .opt-btn:hover .opt-key, .opt-btn:focus .opt-key { background: var(--teal-light); border-color: var(--teal); color: var(--teal-dark); }
+  .opt-btn.correct .opt-key, .opt-btn.incorrect .opt-key { background: rgba(255,255,255,0.3); border-color: rgba(255,255,255,0.5); color: white; }
+
+
+  .flag-btn { border: 1.5px dashed var(--gray-400); background: transparent; border-radius: 99px; padding: 5px 16px; font-size: 0.82em; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; color: var(--gray-400); transition: all 0.18s; display: flex; align-items: center; gap: 6px; }
+  .flag-btn:hover { border-color: var(--red); color: var(--red); background: var(--red-light); }
+  .flag-btn.flagged { border-color: var(--red); color: var(--red); background: var(--red-light); border-style: solid; }
+
+  /* ── Q TOOLS ── */
+  .q-tools { display: flex; gap: 8px; padding: 0 24px 14px; flex-wrap: wrap; }
+  .q-tool-btn { border: 1.5px solid var(--gray-200); background: var(--gray-50); border-radius: 99px; padding: 4px 14px; font-size: 0.78em; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; color: var(--gray-600); transition: all 0.18s; display: flex; align-items: center; gap: 5px; text-decoration: none; }
+  .q-tool-btn:hover { background: var(--teal-light); border-color: var(--teal); color: var(--teal-dark); }
+
+  /* ── CARD TINT ── */
+  .q-card.card-correct { background: #f0faf6; border-color: #a8dfc8; }
+  .q-card.card-wrong   { background: #fff4f4; border-color: #f5b8b8; }
+
+  /* ── MISTAKE BADGE ── */
+  .mistake-badge { display: inline-block; margin-top: 7px; background: #fff3cd; border: 1px solid #f0a020; color: #8a5a00; font-size: 0.75em; font-weight: 700; padding: 3px 10px; border-radius: 99px; letter-spacing: 0.01em; direction: rtl; }
+
+  /* ── BRANCH TAG ── */
+  .branch-tag { display: inline-block; font-size: 0.68em; font-weight: 800; letter-spacing: 0.04em; border-radius: 6px; padding: 2px 7px; margin-left: 8px; white-space: nowrap; flex-shrink: 0; align-self: flex-start; margin-top: 3px; border: 1.5px solid; }
+  .bt-nutr  { background:#fff8e1; color:#a05c00; border-color:#f0c060; }
+  .bt-bf    { background:#fce4ec; color:#b71c4a; border-color:#f48fb1; }
+  .bt-gd    { background:#e8f5e9; color:#1b5e20; border-color:#81c784; }
+  .bt-heme  { background:#fbe9e7; color:#b71c1c; border-color:#ef9a9a; }
+  .bt-renal { background:#e3f2fd; color:#0d47a1; border-color:#90caf9; }
+  .bt-cns   { background:#f3e5f5; color:#6a1b9a; border-color:#ce93d8; }
+  .bt-resp  { background:#e0f7fa; color:#006064; border-color:#80deea; }
+  .bt-cardio{ background:#fce4ec; color:#880e4f; border-color:#f48fb1; }
+  .bt-infect{ background:#f9fbe7; color:#558b2f; border-color:#aed581; }
+  .bt-git   { background:#fff3e0; color:#e65100; border-color:#ffb74d; }
+  .bt-hepato{ background:#efebe9; color:#4e342e; border-color:#bcaaa4; }
+  .bt-vacc  { background:#e8eaf6; color:#283593; border-color:#9fa8da; }
+  .bt-neo   { background:#e0f2f1; color:#004d40; border-color:#80cbc4; }
+  .bt-gen   { background:#f3e5f5; color:#4a148c; border-color:#ba68c8; }
+  .bt-endo  { background:#e8f5e9; color:#2e7d32; border-color:#a5d6a7; }
+
+  /* ── SUMMARY ── */
+  #summary-view { display: none; max-width: 700px; margin: 0 auto; padding: 32px 16px 80px; animation: fadeIn 0.4s ease; }
+  .summary-hero { background: linear-gradient(135deg, var(--teal-dark), var(--teal)); color: white; border-radius: var(--radius); padding: 40px 32px; text-align: center; margin-bottom: 24px; box-shadow: var(--shadow-lg); }
+  .summary-score-big { font-family: 'DM Serif Display', serif; font-size: 4.5em; line-height: 1; }
+  .summary-score-label { opacity: 0.85; font-size: 1em; margin-top: 6px; }
+  .summary-pct { display: inline-block; margin-top: 16px; background: rgba(255,255,255,0.2); border-radius: 99px; padding: 6px 20px; font-size: 1.05em; font-weight: 700; }
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+  .sstat { background: white; border-radius: var(--radius); padding: 20px; text-align: center; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); }
+  .sstat-num { font-size: 2em; font-weight: 700; }
+  .sstat-num.green { color: var(--green); } .sstat-num.red { color: var(--red); } .sstat-num.amber { color: var(--amber); }
+  .sstat-label { font-size: 0.78em; color: var(--gray-400); margin-top: 4px; }
+  .review-header { font-family: 'DM Serif Display', serif; font-size: 1.6em; color: var(--red); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--gray-200); }
+  .review-item { background: white; border-left: 4px solid var(--red); border-radius: var(--radius); padding: 20px 22px; margin-bottom: 14px; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); border-left: 4px solid var(--red); }
+  .review-q { font-weight: 600; color: var(--gray-800); margin-bottom: 10px; line-height: 1.5; user-select: text; }
+  .review-yours { color: var(--red); font-size: 0.9em; margin-bottom: 4px; }
+  .review-correct { color: var(--green); font-size: 0.9em; margin-bottom: 8px; font-weight: 600; }
+  .review-exp { font-size: 0.87em; color: #7a6030; background: #fffdf0; border-left: 3px solid #d4a017; padding: 10px 14px; border-radius: 6px; margin-top: 8px; line-height: 1.6; }
+  .summary-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 28px; }
+
+  /* ── MODAL ── */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 999; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.2s ease; }
+  .modal-overlay.open { display: flex; }
+  .modal-box { background: white; border-radius: var(--radius); max-width: 500px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow-lg); animation: slideDown 0.25s ease; }
+  .modal-header { background: linear-gradient(135deg, var(--teal-dark), var(--teal)); color: white; padding: 22px 24px 18px; border-radius: var(--radius) var(--radius) 0 0; display: flex; justify-content: space-between; align-items: center; }
+  .modal-header h2 { font-family: 'DM Serif Display', serif; font-size: 1.3em; }
+  .modal-close { background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; font-size: 1.1em; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+  .modal-close:hover { background: rgba(255,255,255,0.35); }
+  .modal-body { padding: 24px; }
+  .guide-item { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--gray-200); }
+  .guide-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .guide-icon { font-size: 1.4em; flex-shrink: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: var(--teal-light); border-radius: 8px; }
+  .guide-text { flex: 1; }
+  .guide-title { font-weight: 700; font-size: 0.95em; color: var(--gray-800); margin-bottom: 3px; }
+  .guide-desc { font-size: 0.86em; color: var(--gray-600); line-height: 1.55; }
+
+  /* ── TOAST ── */
+  .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: white; color: var(--gray-800); padding: 10px 22px; border-radius: 99px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); font-size: 0.88em; font-weight: 600; opacity: 0; transition: all 0.3s ease; z-index: 9999; pointer-events: none; border: 1px solid var(--gray-200); white-space: nowrap; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* ── DARK MODE ── */
+  body.dark { --teal: #00c9bc; --teal-dark: #00e0d0; --teal-light: #0d2e2c; --teal-mid: #1a3d3a; --gray-50: #1c2530; --gray-100: #141b22; --gray-200: #253040; --gray-400: #6a8a96; --gray-600: #9ab8c2; --gray-800: #ddeef2; background: #0f1620; color: #ddeef2; }
+  body.dark .topbar { background: #111c28; border-color: #253040; }
+  body.dark .topbar-title { color: #00e0d0; }
+  body.dark .q-card { background: #172030; border-color: #253040; }
+  body.dark .q-header { border-color: #253040; }
+  body.dark .opt-btn { background: #1c2a38; border-color: #2d3f52; color: #9ab8c2; }
+  body.dark .opt-btn:hover:not(:disabled) { background: #0d2e2c; border-color: #00c9bc; color: #00e0d0; }
+  body.dark .flag-btn { border-color: #3a4a5a; color: #6a8a96; }
+  body.dark .flag-btn:hover { background: #2a1010; border-color: #c0392b; color: #e85a4a; }
+  body.dark .flag-btn.flagged { background: #2a1010; border-color: #c0392b; color: #e85a4a; }
+  body.dark .btn-outline { background: #172030; color: #9ab8c2; border-color: #253040; }
+  body.dark .summary-hero { background: linear-gradient(135deg, #0a2a28, #00a89c); }
+  body.dark .sstat { background: #172030; border-color: #253040; }
+  body.dark .review-item { background: #172030; border-color: #253040; border-left-color: #c0392b; }
+  body.dark .review-q { color: #ddeef2; }
+  body.dark .review-exp { background: #1e1a08; color: #d8c878; border-left-color: #c9951a; }
+  body.dark .modal-box { background: #172030; }
+  body.dark .modal-body { background: #172030; }
+  body.dark .guide-item { border-color: #253040; }
+  body.dark .guide-icon { background: #0d2e2c; }
+  body.dark .guide-title { color: #ddeef2; }
+  body.dark .guide-desc { color: #9ab8c2; }
+  body.dark .q-tool-btn { background: #1c2a38; border-color: #2d3f52; color: #9ab8c2; }
+  body.dark .q-tool-btn:hover { background: #0d2e2c; border-color: #00c9bc; color: #00e0d0; }
+  body.dark #timer-display { color: #9ab8c2; }
+  body.dark .toast { background: #172030; color: #ddeef2; border-color: #253040; }
+  body.dark .ring-bg { stroke: #253040; }
+  body.dark .ring-fill { stroke: #00c9bc; }
+  body.dark .ring-answered { color: #00e0d0; }
+  body.dark .ring-total { color: #6a8a96; }
+  body.dark .q-card.card-correct { background: #0a1e16; border-color: #1a4a30; }
+  body.dark .q-card.card-wrong   { background: #1e0a0a; border-color: #4a1818; }
+  body.dark .topbar-icon-btn:hover { background: #253040; }
+  body.dark .opt-key { background: #172030; border-color: #1c2336; color: #4a6080; }
+  body.dark .mistake-badge { background: #2e2010; border-color: #a07020; color: #e0b050; }
+  body.dark .bt-nutr  { background:#2a1e00; color:#f0c060; border-color:#a07030; }
+  body.dark .bt-gd    { background:#0a1e0a; color:#81c784; border-color:#2e5c2e; }
+  body.dark .bt-heme  { background:#2a0a0a; color:#ef9a9a; border-color:#883030; }
+  body.dark .bt-renal { background:#0a1525; color:#90caf9; border-color:#1a3a60; }
+  body.dark .bt-cns   { background:#1a0a25; color:#ce93d8; border-color:#5a2a80; }
+  body.dark .bt-resp  { background:#002a2e; color:#80deea; border-color:#005060; }
+  body.dark .bt-cardio{ background:#2a0015; color:#f48fb1; border-color:#880030; }
+  body.dark .bt-infect{ background:#151e05; color:#aed581; border-color:#4a6a20; }
+  body.dark .bt-git   { background:#251000; color:#ffb74d; border-color:#a05000; }
+  body.dark .bt-hepato{ background:#1a1210; color:#bcaaa4; border-color:#5a4040; }
+  body.dark .bt-vacc  { background:#0a0e20; color:#9fa8da; border-color:#2a3060; }
+  body.dark .bt-neo   { background:#001a18; color:#80cbc4; border-color:#004040; }
+  body.dark .bt-gen   { background:#180a28; color:#ba68c8; border-color:#5a2070; }
+  body.dark .bt-endo  { background:#0a1e0a; color:#a5d6a7; border-color:#2a5a2a; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <!-- ===================================================== -->
+  <!-- تعديل: غيّر "TEMPLATE" لاسم الـ Quiz بتاعك          -->
+  <!-- ===================================================== -->
+  <span class="topbar-title" onclick="ownerTitleClick()" style="cursor:default">TEMPLATE</span>
+  <div class="progress-wrap">
+    <div class="ring-wrap">
+      <svg width="44" height="44" viewBox="0 0 44 44"><circle class="ring-bg" cx="22" cy="22" r="18"/><circle class="ring-fill" id="ring-fill" cx="22" cy="22" r="18"/></svg>
+      <div class="ring-label"><span class="ring-answered" id="ring-answered">0</span><span class="ring-total" id="ring-total">/0</span></div>
+    </div>
+  </div>
+  <span class="score-pill">✓ <span id="score-top">0</span></span>
+  <span id="timer-display">00:00</span>
+  <button id="btn-skip-to-next" onclick="skipToNext()">⏭ السؤال الجاي</button>
+  <div class="topbar-icon-group">
+    <button class="topbar-icon-btn" id="sound-btn" onclick="toggleSound()" title="صوت">🔔</button>
+    <button class="topbar-icon-btn" id="dark-btn" onclick="toggleDark()" title="وضع داكن">🌙</button>
+    <button class="topbar-icon-btn" onclick="openGuide()" title="دليل">❓</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <!-- ===================================================== -->
+  <!-- تعديل: غيّر عنوان الـ Quiz والوصف                   -->
+  <!-- ===================================================== -->
+  <h1>TEMPLATE Quiz</h1>
+  <p>اسم المادة أو الوصف هنا</p>
+  <div class="header-stats">
+    <div class="hstat"><div class="hstat-num" id="sum-total">0</div><div class="hstat-label">سؤال</div></div>
+    <div class="hstat"><div class="hstat-num" id="h-answered">0</div><div class="hstat-label">أجبت</div></div>
+    <div class="hstat"><div class="hstat-num" id="h-correct">0</div><div class="hstat-label">صح</div></div>
+    <div class="hstat"><div class="hstat-num" id="h-wrong">0</div><div class="hstat-label">غلط</div></div>
+  </div>
+</div>
+
+
+<!-- CONTROLS TOP -->
+<div class="controls">
+  <button class="btn btn-primary" onclick="restartQuiz()">🔀 خلط من أول</button>
+  <button class="btn btn-outline" id="btn-review-top" style="display:none" onclick="showSummary()">📊 النتيجة</button>
+</div>
+
+<!-- MAIN QUIZ VIEW -->
+<div id="main-view"></div>
+
+<!-- SUMMARY VIEW -->
+<div id="summary-view">
+  <div class="summary-hero">
+    <div class="summary-score-big" id="sum-score">0</div>
+    <div class="summary-score-label">من <span id="sum-total2">0</span> سؤال</div>
+    <div class="summary-pct" id="sum-pct">0%</div>
+  </div>
+  <div class="summary-grid">
+    <div class="sstat"><div class="sstat-num green" id="sum-correct">0</div><div class="sstat-label">صح ✓</div></div>
+    <div class="sstat"><div class="sstat-num red" id="sum-wrong">0</div><div class="sstat-label">غلط ✗</div></div>
+    <div class="sstat"><div class="sstat-num amber" id="sum-time">--</div><div class="sstat-label">الوقت</div></div>
+  </div>
+  <div id="review-list"></div>
+  <div class="summary-actions">
+    <button class="btn btn-primary" onclick="restartQuiz()">🔀 من أول</button>
+    <button class="btn btn-outline" id="btn-retake-mistakes" onclick="retakeMistakes()" style="display:none">🔁 كرر الغلط</button>
+    <button class="btn btn-outline" onclick="backToQuiz()">↩ رجّع للأسئلة</button>
+  </div>
+  <div id="sum-wronglist"></div>
+</div>
+
+<!-- CONTROLS BOTTOM -->
+<div class="controls" id="controls-bottom">
+  <button class="btn btn-primary" onclick="restartQuiz()">🔀 خلط من أول</button>
+  <button class="btn btn-outline" id="btn-review-bottom" style="display:none" onclick="showSummary()">📊 النتيجة</button>
+  <button class="btn btn-outline" onclick="retake3xMistakes()">⚡ كرر الأخطاء المتكررة</button>
+</div>
+
+<div style="text-align:center;margin-top:10px;margin-bottom:20px;">
+  <button onclick="resetAllData()" style="background:none;border:none;cursor:pointer;font-size:0.78em;color:var(--gray-400);font-family:'DM Sans',sans-serif;text-decoration:underline;opacity:0.7;transition:opacity 0.15s;" onmouseover="this.style.opacity='1';this.style.color='#c0392b'" onmouseout="this.style.opacity='0.7';this.style.color='var(--gray-400)'">🗑️ مسح كل البيانات المحفوظة</button>
+</div>
+
+<!-- FOOTER -->
+<div style="text-align:center;padding:48px 24px 40px;direction:rtl;">
+  <div style="display:inline-block;background:linear-gradient(135deg,var(--teal-dark),var(--teal));border-radius:20px;padding:32px 40px;max-width:480px;width:100%;box-shadow:var(--shadow-lg);color:white;">
+    <div style="font-size:1.6em;margin-bottom:6px;">🤍</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:1.5em;font-weight:700;margin-bottom:10px;">صلِّ على النبي ﷺ</div>
+    <div style="font-size:0.9em;opacity:0.82;line-height:1.7;margin-bottom:22px;border-top:1px solid rgba(255,255,255,0.25);border-bottom:1px solid rgba(255,255,255,0.25);padding:14px 0;">اللهم صلِّ وسلم وبارك على سيدنا محمد</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:1.25em;font-weight:700;">بالتوفيق — ربنا معاك 🌟</div>
+  </div>
+</div>
+
+<!-- FEEDBACK BUTTON -->
+<button onclick="openFeedback()" style="position:fixed;bottom:20px;left:16px;z-index:200;background:var(--teal);color:white;border:none;border-radius:99px;padding:9px 16px;font-size:0.82em;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 4px 16px rgba(0,0,0,0.18);opacity:0.85;transition:opacity 0.15s,transform 0.15s;" onmouseover="this.style.opacity='1';this.style.transform='translateY(-2px)'" onmouseout="this.style.opacity='0.85';this.style.transform='translateY(0)'">✉️ اقتراح أو تصحيح</button>
+
+<!-- FEEDBACK MODAL -->
+<div class="modal-overlay" id="feedback-modal" onclick="closeFeedbackOutside(event)">
+  <div class="modal-box" style="max-width:480px;">
+    <div class="modal-header"><h2>✉️ ابعت اقتراح أو تصحيح</h2><button class="modal-close" onclick="closeFeedback()">✕</button></div>
+    <div class="modal-body" style="direction:rtl;">
+      <p style="font-size:0.88em;color:var(--gray-600);margin-bottom:12px;line-height:1.6;">ابعت أي اقتراح أو تعديل لقيته — رسالتك هتوصل.</p>
+      <textarea id="feedback-text" placeholder="اكتب هنا..." style="width:100%;min-height:110px;padding:12px;border:1.5px solid var(--gray-200);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.92em;resize:vertical;direction:rtl;outline:none;box-sizing:border-box;transition:border-color 0.15s;background:var(--gray-50);color:var(--gray-800);" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--gray-200)'"></textarea>
+      <div id="feedback-status" style="font-size:0.82em;margin-top:8px;min-height:18px;"></div>
+      <button onclick="submitFeedback()" style="margin-top:12px;width:100%;background:var(--teal);color:white;border:none;border-radius:99px;padding:11px;font-size:0.92em;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">إرسال 📨</button>
+    </div>
+  </div>
+</div>
+
+<!-- GUIDE MODAL -->
+<div class="modal-overlay" id="guide-modal" onclick="closeGuideOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header"><h2>❓ دليل الاستخدام</h2><button class="modal-close" onclick="closeGuide()">✕</button></div>
+    <div class="modal-body" style="direction:rtl;">
+      <div class="guide-item"><div class="guide-icon">⌨️</div><div class="guide-text"><div class="guide-title">اختصارات لوحة المفاتيح</div><div class="guide-desc">اضغط A أو B أو C أو D للإجابة على السؤال الحالي</div></div></div>
+      <div class="guide-item"><div class="guide-icon">🔀</div><div class="guide-text"><div class="guide-title">خلط الأسئلة</div><div class="guide-desc">اضغط "خلط من أول" لتغيير ترتيب الأسئلة</div></div></div>
+      <div class="guide-item"><div class="guide-icon">🚩</div><div class="guide-text"><div class="guide-title">قائمة المراجعة</div><div class="guide-desc">بعد الإجابة الصح، اضغط "حط في قائمة المراجعة" لتحفظه</div></div></div>
+      <div class="guide-item"><div class="guide-icon">📖</div><div class="guide-text"><div class="guide-title">شرح تلقائي</div><div class="guide-desc">فعّل الشرح التلقائي من شريط الأدوات علشان يظهر الشرح لما تغلط</div></div></div>
+      <div class="guide-item"><div class="guide-icon">💾</div><div class="guide-text"><div class="guide-title">حفظ تلقائي</div><div class="guide-desc">إجاباتك بتتحفظ تلقائياً — تقدر تكمل من حيث وقفت</div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+//
+//   ██████╗ ██╗   ██╗██╗███████╗    ██████╗  █████╗ ████████╗ █████╗
+//   ██╔══██╗██║   ██║██║╚══███╔╝    ██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗
+//   ██║  ██║██║   ██║██║  ███╔╝     ██║  ██║███████║   ██║   ███████║
+//   ██║  ██║██║   ██║██║ ███╔╝      ██║  ██║██╔══██║   ██║   ██╔══██║
+//   ██████╔╝╚██████╔╝██║███████╗    ██████╔╝██║  ██║   ██║   ██║  ██║
+//   ╚═════╝  ╚═════╝ ╚═╝╚══════╝    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+//
+// ══════════════════════════════════════════════════════════════════
+//
+//   كل اللي محتاج تعدله هو الـ quizData أدناه بس!
+//
+//   كل سؤال ليه الشكل ده:
+//
+//   {
+//     q: "نص السؤال هنا",
+//     options: [
+//       "a. الخيار الأول",
+//       "b. الخيار الثاني",
+//       "c. الخيار الثالث",
+//       "d. الخيار الرابع"
+//     ],
+//     answer: 0,   // رقم الإجابة الصح (0=a, 1=b, 2=c, 3=d)
+//     branch: "اسم التوبيك",   // للفلتر - أي اسم إنت عايزه
+//     expContent: `<div class="exp-body">الشرح هنا بالإنجليزي أو العربي</div>`
+//     // أو لو عاوز quote:
+//     // expContent: `<div class="exp-quote">"نص الـ quote هنا"</div>`
+//   }
+//
+//   ── ملاحظات مهمة ──
+//   • answer بيبدأ من 0 (يعني a=0, b=1, c=2, d=3)
+//   • branch ممكن تكون أي كلمة - هي اللي بتظهر في الفلتر فوق
+//   • لو عندك branch جديدة مش موجودة في BRANCH_META تحت،
+//     أضفها هناك عشان تاخد لون مميز
+//
+// ══════════════════════════════════════════════════════════════════
+
+const quizData = [
+
+  // ════════════════════════════════
+  //  ✏️  ابدأ تحط أسئلتك هنا
+  // ════════════════════════════════
+
+  {
+    q: "السؤال الأول — اكتب السؤال هنا بالكامل",
+    options: [
+      "a. الخيار الأول",
+      "b. الخيار الثاني",
+      "c. الخيار الثالث",
+      "d. الخيار الرابع"
+    ],
+    answer: 0, // ← الإجابة الصح هي (a)
+    branch: "التوبيك الأول",
+    topic: "عنوان السؤال — كلمات مختصرة",
+    ref: "اسم الليكتشر أو الكتاب",
+    expContent: `<div class="exp-body">اشرح هنا ليه الإجابة دي هي الصح، وليه باقي الخيارات غلط.</div>`
+  },
+
+  {
+    q: "السؤال الثاني — اكتب السؤال هنا بالكامل",
+    options: [
+      "a. الخيار الأول",
+      "b. الخيار الثاني",
+      "c. الخيار الثالث",
+      "d. الخيار الرابع"
+    ],
+    answer: 1, // ← الإجابة الصح هي (b)
+    branch: "التوبيك الثاني",
+    topic: "عنوان السؤال — كلمات مختصرة",
+    ref: "اسم الليكتشر أو الكتاب",
+    expContent: `<div class="exp-quote">"لو عندك quote مباشر من الليكتشر، حطه هنا جوه exp-quote بدل exp-body"</div>`
+  },
+
+  {
+    q: "السؤال الثالث — مثال على إجابة صح (c)",
+    options: [
+      "a. الخيار الأول",
+      "b. الخيار الثاني",
+      "c. الخيار الثالث",
+      "d. الخيار الرابع"
+    ],
+    answer: 2, // ← الإجابة الصح هي (c)
+    branch: "التوبيك الأول",
+    topic: "عنوان السؤال — كلمات مختصرة",
+    ref: "اسم الليكتشر أو الكتاب",
+    expContent: `<div class="exp-body">الشرح هنا. ممكن تستخدم &lt;em&gt;للـ italic&lt;/em&gt; و&lt;strong&gt;للـ bold&lt;/strong&gt;.</div>`
+  },
+
+  {
+    q: "السؤال الرابع — مثال على إجابة صح (d)",
+    options: [
+      "a. الخيار الأول",
+      "b. الخيار الثاني",
+      "c. الخيار الثالث",
+      "d. الخيار الرابع"
+    ],
+    answer: 3, // ← الإجابة الصح هي (d)
+    branch: "التوبيك الثاني",
+    topic: "عنوان السؤال — كلمات مختصرة",
+    ref: "اسم الليكتشر أو الكتاب",
+    expContent: `<div class="exp-body">الشرح هنا. استمر في إضافة أسئلة بنفس الشكل ده.</div>`
+  },
+
+  // ═══════════════════════════════════════════════════════
+  //  أضف باقي أسئلتك هنا — كل سؤال بنفس الشكل فوق
+  //  ولا تنسى الفاصلة (,) بعد كل سؤال ما عدا الأخير
+  // ═══════════════════════════════════════════════════════
+
+]; // ← نهاية الـ quizData — ملتش بعد الـ ] دي
+
+// ══════════════════════════════════════════════
+// ── CONFIG ──
+// ══════════════════════════════════════════════
+// ─── غيّر الـ EXAM_LABEL والـ SAVE_KEY لاسم الـ Quiz بتاعك ───
+const FORMSPREE_ID  = 'YOUR_FORMSPREE_ID'; // اختياري - للـ Feedback
+const EXAM_LABEL    = 'TEMPLATE Quiz';      // ← اسم الـ Quiz
+const SAVE_KEY      = 'template_progress';  // ← مفتاح الحفظ (أي اسم فريد)
+const MISTAKES_KEY  = 'template_mistakes';  // ← مفتاح الأخطاء
+
+// ── Branch meta ──
+// أضف توبيكاتك هنا عشان تاخد ألوان مميزة
+const BRANCH_META = {
+  // ─── الموجودة أصلاً ───
+  'Respiratory':           { ab: 'Resp',   cls: 'bt-resp'   },
+  'Hematology':            { ab: 'Heme',   cls: 'bt-heme'   },
+  'Neurology':             { ab: 'CNS',    cls: 'bt-cns'    },
+  'Gastroenterology':      { ab: 'GIT',    cls: 'bt-git'    },
+  'Neonatology':           { ab: 'Neo',    cls: 'bt-neo'    },
+  'Endocrinology':         { ab: 'Endo',   cls: 'bt-endo'   },
+  'Nutrition':             { ab: 'Nutr',   cls: 'bt-nutr'   },
+  'Cardiology':            { ab: 'Cardio', cls: 'bt-cardio' },
+  'Nephrology':            { ab: 'Renal',  cls: 'bt-renal'  },
+  'Hepatology':            { ab: 'Hepato', cls: 'bt-hepato' },
+  'Infectious Diseases':   { ab: 'Infect', cls: 'bt-infect' },
+  'Vaccination':           { ab: 'Vacc',   cls: 'bt-vacc'   },
+  'Growth & Development':  { ab: 'G&D',    cls: 'bt-gd'     },
+  'Genetics':              { ab: 'Gen',    cls: 'bt-gen'    },
+  // ─── أضف توبيكاتك الجديدة هنا مثلاً: ───
+  // 'Pharmacology':       { ab: 'Pharma', cls: 'bt-nutr'   },
+  // 'Surgery':            { ab: 'Surg',   cls: 'bt-heme'   },
+  // 'التوبيك الأول':     { ab: 'TOP1',   cls: 'bt-resp'   },
+  // 'التوبيك الثاني':    { ab: 'TOP2',   cls: 'bt-cns'    },
+};
+
+function branchTag(branch) {
+  const m = BRANCH_META[branch] || { ab: branch.slice(0,5), cls: 'bt-nutr' };
+  return `<span class="branch-tag ${m.cls}">${m.ab}</span>`;
+}
+
+// ── State ──
+let quiz = [];
+let score = 0, answered = 0, wrong = 0;
+let wrongItems = [];
+let timerInterval = null, timerSeconds = 0, timerRunning = false;
+let sessionAnswered = 0;
+let answersMap = {};
+let mistakeCounts = {};
+let correctStreaks = {};
+let flaggedSet = new Set();
+let isRetakeMode = false;
+let completionCounted = false;
+let ownerClicks = 0;
+
+function setReviewBtnVisible(visible) {
+  const d = visible ? 'inline-block' : 'none';
+  document.getElementById('btn-review-top').style.display = d;
+  document.getElementById('btn-review-bottom').style.display = d;
+}
+function shuffleArray(arr) {
+  let a = [...arr], i = a.length;
+  while (i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function updateProgress() {
+  const total = quiz.length;
+  const pct = total ? (answered / total) : 0;
+  const circumference = 113;
+  document.getElementById('ring-fill').style.strokeDashoffset = circumference - pct * circumference;
+  document.getElementById('ring-answered').textContent = answered;
+  document.getElementById('ring-total').textContent = '/' + total;
+  document.getElementById('score-top').textContent = score;
+  document.getElementById('h-answered').textContent = answered;
+  document.getElementById('h-correct').textContent = score;
+  document.getElementById('h-wrong').textContent = wrong;
+  if (answered > 0) setReviewBtnVisible(true);
+  document.getElementById('btn-skip-to-next').style.display = (answered > 0 && answered < total) ? 'block' : 'none';
+  if (sessionAnswered === 1) startTimer();
+}
+
+// ── Render Quiz ──
+function renderQuiz() {
+  const container = document.getElementById('main-view');
+  container.innerHTML = '';
+  document.getElementById('summary-view').style.display = 'none';
+  container.style.display = 'block';
+  document.getElementById('controls-bottom').style.display = 'flex';
+
+  quiz.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = 'card-' + idx;
+
+    const mc = mistakeCounts[item.q] || 0;
+    const mistakeBadge = mc >= 2 ? `<div class="mistake-badge">⚠️ غلطت فيه ${mc === 2 ? 'مرتين' : mc + ' مرات'} — ركّز</div>` : '';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'q-header';
+    hdr.innerHTML = `<span class="q-num">Q${idx+1}</span>${branchTag(item.branch)}<div style="flex:1"><div class="q-text">${item.q}</div>${mistakeBadge}</div>`;
+    card.appendChild(hdr);
+
+    const opts = document.createElement('div');
+    opts.className = 'q-options';
+    opts.id = 'opts-' + idx;
+    item.options.forEach((opt, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.innerHTML = `<span class="opt-key">${['A','B','C','D'][oi]}</span><span class="opt-icon">${oi === item.answer ? '✓' : '✗'}</span>${opt}`;
+      btn.onclick = () => handleAnswer(idx, oi, btn, opts);
+      opts.appendChild(btn);
+    });
+    card.appendChild(opts);
+
+    const flagRow = document.createElement('div');
+    flagRow.className = 'flag-row';
+    flagRow.id = 'flag-' + idx;
+    flagRow.innerHTML = `
+      <button class="flag-btn" id="flagbtn-${idx}" onclick="toggleFlag(${idx})" style="display:none">🚩 حط في قائمة المراجعة</button>
+      <button class="q-tool-btn" style="border-color:#10a37f;color:#10a37f;" onclick="gptExplain(${idx})">🤖 ChatGPT يشرحها</button>
+      <button class="q-tool-btn" onclick="searchQuestion(${idx})">🔍 بحث</button>
+    `;
+    card.appendChild(flagRow);
+    container.appendChild(card);
+  });
+}
+
+// ── Handle Answer ──
+function handleAnswer(idx, chosenIdx, btn, optsDiv) {
+  const item = quiz[idx];
+  const allBtns = optsDiv.querySelectorAll('.opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+  answered++;
+  const card = document.getElementById('card-' + idx);
+  if (chosenIdx === item.answer) {
+    btn.classList.add('correct');
+    if (card) card.classList.add('card-correct');
+    score++;
+    playSound(true);
+    document.getElementById('flagbtn-' + idx).style.display = 'flex';
+    if (mistakeCounts[item.q]) {
+      correctStreaks[item.q] = (correctStreaks[item.q] || 0) + 1;
+      if (correctStreaks[item.q] >= 2) {
+        delete mistakeCounts[item.q]; delete correctStreaks[item.q];
+        try { localStorage.setItem(MISTAKES_KEY, JSON.stringify(mistakeCounts)); } catch(e) {}
+      }
+    }
+  } else {
+    btn.classList.add('incorrect');
+    allBtns[item.answer].classList.add('correct');
+    if (card) card.classList.add('card-wrong');
+    wrong++;
+    playSound(false);
+    mistakeCounts[item.q] = (mistakeCounts[item.q] || 0) + 1;
+    correctStreaks[item.q] = 0;
+    try { localStorage.setItem(MISTAKES_KEY, JSON.stringify(mistakeCounts)); } catch(e) {}
+    wrongItems.push({ q: item.q, yours: item.options[chosenIdx], correct: item.options[item.answer], expContent: item.expContent });
+  }
+  document.getElementById('flag-' + idx).classList.add('show');
+  answersMap[idx] = chosenIdx;
+  sessionAnswered++;
+  updateProgress();
+  saveProgress();
+}
+
+function toggleFlag(idx) {
+  const btn = document.getElementById('flagbtn-' + idx);
+  if (flaggedSet.has(idx)) {
+    flaggedSet.delete(idx);
+    btn.classList.remove('flagged');
+    btn.innerHTML = '🚩 حط في قائمة المراجعة';
+    showToast('🚩 اتشال من قائمة المراجعة');
+  } else {
+    flaggedSet.add(idx);
+    btn.classList.add('flagged');
+    btn.innerHTML = '✅ اتضاف للمراجعة — اضغط علشان تشيله';
+    showToast('✅ اتضاف لقائمة المراجعة');
+  }
+  saveProgress();
+}
+
+// ── Summary ──
+function showSummary() {
+  document.getElementById('main-view').style.display = 'none';
+  document.getElementById('controls-bottom').style.display = 'none';
+  const sv = document.getElementById('summary-view');
+  sv.style.display = 'block';
+  document.getElementById('sum-score').textContent = score;
+  document.getElementById('sum-total2').textContent = quiz.length;
+  document.getElementById('sum-correct').textContent = score;
+  document.getElementById('sum-wrong').textContent = wrong;
+  const pct = quiz.length ? Math.round(score / quiz.length * 100) : 0;
+  document.getElementById('sum-pct').textContent = pct + '%';
+  const m = String(Math.floor(timerSeconds/60)).padStart(2,'0');
+  const s = String(timerSeconds%60).padStart(2,'0');
+  document.getElementById('sum-time').textContent = m + ':' + s;
+
+  const retakeBtn = document.getElementById('btn-retake-mistakes');
+  if (retakeBtn) retakeBtn.style.display = wrongItems.length > 0 ? 'inline-block' : 'none';
+
+  const rl = document.getElementById('sum-wronglist');
+  rl.innerHTML = '';
+  if (wrongItems.length > 0) {
+    const h = document.createElement('div'); h.className = 'review-header'; h.innerHTML = '✗ الأسئلة اللي غلطت فيها'; rl.appendChild(h);
+    wrongItems.forEach((item, i) => {
+      const div = document.createElement('div'); div.className = 'review-item';
+      div.innerHTML = `<div class="review-q">${i+1}. ${item.q}</div><div class="review-yours">✗ إجابتك: ${item.yours}</div><div class="review-correct">✓ الصح: ${item.correct}</div>`;
+      rl.appendChild(div);
+    });
+  } else {
+    rl.innerHTML = '<p style="text-align:center;color:var(--green);font-weight:700;font-size:1.1em;padding:20px;">🎉 ماشاء الله — مفيش أخطاء!</p>';
+  }
+  if (!completionCounted && !isRetakeMode) completionCounted = true;
+  stopTimer();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function backToQuiz() {
+  document.getElementById('summary-view').style.display = 'none';
+  document.getElementById('main-view').style.display = 'block';
+  document.getElementById('controls-bottom').style.display = 'flex';
+  if (answered > 0 && answered < quiz.length && !timerRunning) startTimer();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function retakeMistakes() {
+  if (wrongItems.length === 0) return;
+  const mistakeData = wrongItems.map(item => quizData.find(q => q.q === item.q)).filter(Boolean);
+  score = 0; answered = 0; wrong = 0; wrongItems = []; answersMap = {}; flaggedSet = new Set(); isRetakeMode = true; sessionAnswered = 0; correctStreaks = {}; completionCounted = false;
+  setReviewBtnVisible(false); resetTimer();
+  quiz = shuffleArray(JSON.parse(JSON.stringify(mistakeData)));
+  renderQuiz(); updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function retake3xMistakes() {
+  const heavy = Object.entries(mistakeCounts).filter(([q,cnt]) => cnt >= 3).map(([q]) => quizData.find(qd => qd.q === q)).filter(Boolean);
+  if (heavy.length === 0) { showToast('مفيش أسئلة غلطت فيها 3 مرات أو أكتر'); return; }
+  score = 0; answered = 0; wrong = 0; wrongItems = []; answersMap = {}; flaggedSet = new Set(); isRetakeMode = true; sessionAnswered = 0; correctStreaks = {}; completionCounted = false;
+  setReviewBtnVisible(false); resetTimer();
+  quiz = shuffleArray(JSON.parse(JSON.stringify(heavy)));
+  renderQuiz(); updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function restartQuiz() {
+  score = 0; answered = 0; wrong = 0; wrongItems = []; answersMap = {}; flaggedSet = new Set(); isRetakeMode = false; sessionAnswered = 0; correctStreaks = {}; completionCounted = false;
+  clearProgress(); setReviewBtnVisible(false); resetTimer();
+  quiz = shuffleArray(JSON.parse(JSON.stringify(quizData)));
+  renderQuiz(); updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetAllData() {
+  if (!confirm('مسح كل البيانات المحفوظة؟')) return;
+  try { localStorage.removeItem(SAVE_KEY); localStorage.removeItem(MISTAKES_KEY); } catch(e) {}
+  mistakeCounts = {}; correctStreaks = {};
+  restartQuiz();
+  showToast('🗑️ اتمسحت كل البيانات');
+}
+
+// ── Save / Restore ──
+function saveProgress() {
+  if (isRetakeMode) return;
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
+      quizOrder: quiz.map(item => quizData.findIndex(q => q.q === item.q)),
+      answersMap, flagged: [...flaggedSet], score, answered, wrong, wrongItems
+    }));
+  } catch(e) {}
+}
+function clearProgress() { try { localStorage.removeItem(SAVE_KEY); } catch(e) {} }
+
+function replayAnsweredStates() {
+  Object.entries(answersMap).forEach(([idxStr, chosenIdx]) => {
+    const idx = parseInt(idxStr);
+    const item = quiz[idx];
+    const optsDiv = document.getElementById('opts-' + idx);
+    if (!optsDiv) return;
+    const allBtns = optsDiv.querySelectorAll('.opt-btn');
+    allBtns.forEach(b => b.disabled = true);
+    const card = document.getElementById('card-' + idx);
+    if (chosenIdx === item.answer) {
+      allBtns[chosenIdx].classList.add('correct');
+      if (card) card.classList.add('card-correct');
+      document.getElementById('flagbtn-' + idx).style.display = 'flex';
+    } else {
+      allBtns[chosenIdx].classList.add('incorrect');
+      allBtns[item.answer].classList.add('correct');
+      if (card) card.classList.add('card-wrong');
+    }
+    document.getElementById('flag-' + idx).classList.add('show');
+    if (flaggedSet.has(idx)) {
+      const fb = document.getElementById('flagbtn-' + idx);
+      if (fb) { fb.classList.add('flagged'); fb.innerHTML = '✅ اتضاف للمراجعة — اضغط علشان تشيله'; }
+    }
+  });
+  for (let i = 0; i < quiz.length; i++) {
+    if (!(i in answersMap)) {
+      const card = document.getElementById('card-' + i);
+      if (card) setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+      break;
+    }
+  }
+}
+
+// ── Skip to Next ──
+function skipToNext() {
+  for (let i = 0; i < quiz.length; i++) {
+    if (!(i in answersMap)) {
+      const card = document.getElementById('card-' + i);
+      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+  }
+}
+
+// ── Sound ──
+let soundEnabled = localStorage.getItem('soundEnabled') !== '0';
+(function(){ const btn = document.getElementById('sound-btn'); if (btn) btn.textContent = soundEnabled ? '🔔' : '🔇'; })();
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  localStorage.setItem('soundEnabled', soundEnabled ? '1' : '0');
+  document.getElementById('sound-btn').textContent = soundEnabled ? '🔔' : '🔇';
+  if (soundEnabled) playSound(true);
+}
+function playSound(correct) {
+  if (!soundEnabled) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    if (correct) { osc.type='sine'; osc.frequency.setValueAtTime(660,ctx.currentTime); osc.frequency.setValueAtTime(880,ctx.currentTime+0.1); gain.gain.setValueAtTime(0.18,ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.35); osc.start(ctx.currentTime); osc.stop(ctx.currentTime+0.35); }
+    else { osc.type='sine'; osc.frequency.setValueAtTime(330,ctx.currentTime); osc.frequency.setValueAtTime(220,ctx.currentTime+0.12); gain.gain.setValueAtTime(0.15,ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.3); osc.start(ctx.currentTime); osc.stop(ctx.currentTime+0.3); }
+  } catch(e) {}
+}
+
+// ── Dark Mode ──
+function toggleDark() {
+  const isDark = document.body.classList.toggle('dark');
+  document.getElementById('dark-btn').textContent = isDark ? '☀️' : '🌙';
+  localStorage.setItem('darkMode', isDark ? '1' : '0');
+}
+(function(){ if (localStorage.getItem('darkMode') === '1') { document.body.classList.add('dark'); const btn = document.getElementById('dark-btn'); if (btn) btn.textContent = '☀️'; } })();
+
+// ── Timer ──
+function startTimer() { if (timerRunning) return; timerRunning = true; timerInterval = setInterval(() => { timerSeconds++; const m = String(Math.floor(timerSeconds/60)).padStart(2,'0'); const s = String(timerSeconds%60).padStart(2,'0'); document.getElementById('timer-display').textContent = m+':'+s; }, 1000); }
+function stopTimer() { timerRunning = false; clearInterval(timerInterval); }
+function resetTimer() { stopTimer(); timerSeconds = 0; document.getElementById('timer-display').textContent = '00:00'; }
+
+// ── Toast ──
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2800); }
+
+// ── Per-question tools ──
+function searchQuestion(idx) { const item = quiz[idx]; window.open('https://www.google.com/search?q=' + encodeURIComponent(item.q + ' ' + item.options.join(' ')), '_blank'); }
+function gptExplain(idx) {
+  const item = quiz[idx];
+  const msg = `Explain this MCQ in simple terms:\n\nQuestion: ${item.q}\n\nOptions:\n${item.options.join('\n')}\n\nCorrect Answer: ${item.options[item.answer]}\n\nExplain: 1) Core concept 2) Why correct answer is right 3) Why each wrong option is wrong`;
+  window.open('https://chatgpt.com/?q=' + encodeURIComponent(msg), '_blank');
+}
+
+// ── Feedback ──
+function openFeedback() { document.getElementById('feedback-modal').classList.add('open'); document.getElementById('feedback-text').value = ''; document.getElementById('feedback-status').textContent = ''; }
+function closeFeedback() { document.getElementById('feedback-modal').classList.remove('open'); }
+function closeFeedbackOutside(e) { if (e.target === document.getElementById('feedback-modal')) closeFeedback(); }
+async function submitFeedback() {
+  const text = document.getElementById('feedback-text').value.trim();
+  const status = document.getElementById('feedback-status');
+  if (!text) { status.style.color = 'var(--red)'; status.textContent = '⚠️ اكتب حاجة الأول.'; return; }
+  if (FORMSPREE_ID === 'YOUR_FORMSPREE_ID') { status.style.color = 'var(--gray-600)'; status.textContent = '⚠️ الـ Formspree ID لسه مش متحدد.'; return; }
+  status.textContent = 'بيتبعت...';
+  try {
+    const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body:JSON.stringify({ message: text, exam: EXAM_LABEL }) });
+    if (res.ok) { status.style.color = 'var(--teal-dark)'; status.textContent = '✅ اتبعت — شكراً!'; setTimeout(closeFeedback, 1800); }
+    else { status.style.color = 'var(--red)'; status.textContent = '❌ في مشكلة — حاول تاني.'; }
+  } catch(e) { status.style.color = 'var(--red)'; status.textContent = '❌ تأكد من الإنترنت.'; }
+}
+
+// ── Guide ──
+function openGuide() { document.getElementById('guide-modal').classList.add('open'); }
+function closeGuide() { document.getElementById('guide-modal').classList.remove('open'); }
+function closeGuideOutside(e) { if (e.target === document.getElementById('guide-modal')) closeGuide(); }
+
+// ── Owner Title (secret) ──
+function ownerTitleClick() { ownerClicks++; if (ownerClicks >= 7) { ownerClicks = 0; showToast('👋 TEMPLATE — بالتوفيق!'); } }
+
+// ── Keyboard shortcuts ──
+document.addEventListener('keydown', function(e) {
+  const key = e.key.toUpperCase();
+  const keyMap = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
+  if (!(key in keyMap)) return;
+  for (let i = 0; i < quiz.length; i++) {
+    const opts = document.getElementById('opts-' + i);
+    if (!opts) continue;
+    const btns = opts.querySelectorAll('.opt-btn');
+    if (btns.length && !btns[0].disabled) {
+      const targetBtn = btns[keyMap[key]];
+      if (targetBtn) { targetBtn.click(); const card = document.getElementById('card-' + i); if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      break;
+    }
+  }
+});
+
+// ══════════════════════════════════════════════
+// ── INIT ──
+// ══════════════════════════════════════════════
+document.getElementById('sum-total').textContent = quizData.length;
+(function loadMistakeCounts() { try { const raw = localStorage.getItem(MISTAKES_KEY); if (raw) mistakeCounts = JSON.parse(raw); } catch(e) {} })();
+
+(function initQuiz() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw);
+      const order = saved.quizOrder;
+      if (Array.isArray(order) && order.length > 0 && order.every(i => i >= 0 && i < quizData.length)) {
+        quiz = order.map(i => JSON.parse(JSON.stringify(quizData[i])));
+        const rawMap = saved.answersMap || {};
+        answersMap = {};
+        Object.keys(rawMap).forEach(k => { answersMap[parseInt(k)] = rawMap[k]; });
+        flaggedSet = new Set(saved.flagged || []);
+        score = saved.score || 0; answered = saved.answered || 0; wrong = saved.wrong || 0;
+        wrongItems = saved.wrongItems || [];
+        renderQuiz(); replayAnsweredStates(); updateProgress();
+        setTimeout(() => showToast('✅ استُعيد تقدمك — كمّل من حيث وقفت 📌'), 200);
+        return;
+      }
+    }
+  } catch(e) {}
+  restartQuiz();
+})();
+</script>
+</body>
+</html>
