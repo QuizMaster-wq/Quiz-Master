@@ -1,0 +1,3009 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz — 81 Questions</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Palette: Deep Focus (Blues & Purples) */
+            --teal: #4361ee;
+            --teal-dark: #3f37c9;
+            --teal-light: #edf2ff;
+            --teal-mid: #b5c2fb;
+            --red: #ef476f;
+            --red-light: #fff0f3;
+            --green: #06d6a0;
+            --green-light: #e6fcf5;
+            --amber: #f59e0b;
+            --amber-light: #fef3c7;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-400: #94a3b8;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            
+            --radius: 16px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1);
+            
+            --bg: var(--gray-100);
+            --card-bg: white;
+            --text: var(--gray-800);
+            --text-secondary: var(--gray-600);
+            --border: var(--gray-200);
+            --btn-bg: white;
+            --btn-hover: var(--teal-light);
+            --explain-bg: #fdfbff;
+            --explain-border: #dbeafe;
+            --explain-text: #1e40af;
+            --toast-bg: #1e293b;
+            --toast-text: #fff;
+            --danger-timer-bg: #fff1f2;
+            --option-key-bg: var(--gray-100);
+            --option-key-border: var(--gray-200);
+            --option-key-color: var(--gray-400);
+        }
+
+        body.dark {
+            --bg: #0b0f1a;
+            --card-bg: #161e2d;
+            --text: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #1e293b;
+            --gray-50: #1e293b;
+            --gray-100: #1e293b;
+            --gray-200: #334155;
+            --gray-400: #64748b;
+            --gray-600: #94a3b8;
+            --gray-800: #f1f5f9;
+            --teal: #5c7cfa;
+            --teal-light: rgba(92, 124, 250, 0.1);
+            --teal-mid: #3b5bdb;
+            --red-light: #441a1a;
+            --green-light: #0d2d1f;
+            --amber-light: #422a06;
+            --explain-bg: #1a1f2e;
+            --explain-border: #2e3b5e;
+            --explain-text: #93c5fd;
+            --danger-timer-bg: #4c1d1d;
+        }
+
+        body.dark {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --gray-50: #1e293b;
+            --gray-100: #1e293b;
+            --gray-200: #334155;
+            --gray-400: #64748b;
+            --gray-600: #94a3b8;
+            --gray-800: #e2e8f0;
+            --teal-light: #0d3b36;
+            --teal-mid: #134e4a;
+            --red-light: #7f1d1d;
+            --green-light: #064e3b;
+            --amber-light: #78350f;
+            --explain-bg: #2d2a1c;
+            --explain-border: #5c4b1f;
+            --explain-text: #fcd34d;
+            --toast-bg: #e2e8f0;
+            --toast-text: #1e293b;
+            --danger-timer-bg: #3b1010;
+            --option-key-bg: #334155;
+            --option-key-border: #475569;
+            --option-key-color: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.lang-en {
+            direction: ltr;
+        }
+        body.lang-en .q-header,
+        body.lang-en .opt-btn {
+            text-align: left;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            height: 60px;
+            box-shadow: var(--shadow-sm);
+            transition: background 0.3s;
+        }
+        .topbar-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.1em;
+            color: var(--teal-dark);
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .progress-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ring-wrap {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+        }
+        .ring-wrap svg {
+            transform: rotate(-90deg);
+        }
+        .ring-bg {
+            fill: none;
+            stroke: var(--border);
+            stroke-width: 4;
+        }
+        .ring-fill {
+            fill: none;
+            stroke: var(--teal);
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-dasharray: 113;
+            stroke-dashoffset: 113;
+            transition: stroke-dashoffset 0.4s ease;
+        }
+        .ring-label {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.1;
+        }
+        .ring-answered {
+            font-size: 0.82em;
+            font-weight: 800;
+            color: var(--teal-dark);
+        }
+        .ring-total {
+            font-size: 0.6em;
+            color: var(--gray-400);
+        }
+        .score-pill {
+            background: var(--teal);
+            color: white;
+            font-weight: 700;
+            font-size: 0.88em;
+            padding: 5px 14px;
+            border-radius: 99px;
+            flex-shrink: 0;
+            letter-spacing: 0.02em;
+            min-width: 70px;
+            text-align: center;
+        }
+        #timer-display {
+            font-size: 0.88em;
+            font-weight: 700;
+            color: var(--gray-600);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.03em;
+            flex-shrink: 0;
+            min-width: 56px;
+            transition: color 0.3s;
+        }
+        #timer-display.warning {
+            color: #d97706;
+            animation: pulse-warn 0.6s infinite;
+        }
+        #timer-display.danger {
+            color: #dc2626;
+            animation: pulse-danger 0.4s infinite;
+            background: var(--danger-timer-bg);
+            padding: 4px 12px;
+            border-radius: 99px;
+        }
+
+        .pause-btn {
+            background: none;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 4px 8px;
+            color: var(--text);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, border-color 0.2s;
+            flex-shrink: 0;
+        }
+        .pause-btn:hover {
+            border-color: var(--teal);
+            background: var(--teal-light);
+        }
+
+        @keyframes pulse-warn {
+            0%,
+            100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        @keyframes pulse-danger {
+            0%,
+            100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 60%, #00b5a9 100%);
+            color: white;
+            padding: 48px 24px 40px;
+            text-align: center;
+            transition: padding 0.3s;
+        }
+        .header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.4em;
+            letter-spacing: -0.01em;
+            margin-bottom: 8px;
+        }
+        .header p {
+            opacity: 0.85;
+            font-size: 1em;
+        }
+        .lang-switch,
+        .dark-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 99px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 0 6px;
+            transition: background 0.2s;
+        }
+        .lang-switch:hover,
+        .dark-toggle:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        /* Setup overlay */
+        .setup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .setup-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 32px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            text-align: start;
+        }
+        .setup-card h2 {
+            font-family: 'DM Serif Display', serif;
+            color: var(--teal-dark);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .setup-group {
+            margin-bottom: 20px;
+        }
+        .setup-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        .setup-group select,
+        .setup-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: var(--gray-50);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95em;
+            transition: border 0.2s;
+        }
+        .setup-group select:focus,
+        .setup-group input:focus {
+            border-color: var(--teal);
+            outline: none;
+            box-shadow: 0 0 0 3px var(--teal-light);
+        }
+        .setup-actions {
+            text-align: center;
+            margin-top: 24px;
+        }
+        .setup-actions .btn-primary {
+            padding: 12px 36px;
+            font-size: 1em;
+            border: none;
+            background: var(--teal);
+            color: white;
+            border-radius: 99px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        /* --- تعديل تنسيق الإعلانات --- */
+        .ad-container {
+            max-width: 800px;
+            margin: 15px auto;
+            padding: 10px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px dashed var(--border);
+            overflow: hidden;
+        }
+
+        /* إخفاء المساحة إذا كان الإعلان فارغاً لكي لا يفسد شكل الصفحة */
+        .adsbygoogle[data-ad-status="unfilled"] {
+            display: none !important;
+        }
+
+        /* Multi-question container */
+        .multi-question-container {
+            padding: 16px;
+        }
+        .multi-question-container .q-card {
+            margin-bottom: 24px;
+        }
+
+        #main-view {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 16px 16px 120px;
+        }
+
+        .q-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: box-shadow 0.2s, background 0.3s;
+        }
+        .q-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+        .q-card.card-correct {
+            background: #f0faf6;
+            border-color: #a8dfc8;
+        }
+        .q-card.card-wrong {
+            background: #fff4f4;
+            border-color: #f5b8b8;
+        }
+        body.dark .q-card.card-correct {
+            background: #0a2e24;
+        }
+        body.dark .q-card.card-wrong {
+            background: #2d1111;
+        }
+
+        .q-header {
+            padding: 22px 24px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+        .q-num {
+            background: var(--teal-light);
+            color: var(--teal-dark);
+            font-weight: 700;
+            font-size: 0.78em;
+            padding: 4px 10px;
+            border-radius: 99px;
+            flex-shrink: 0;
+            margin-top: 3px;
+            letter-spacing: 0.04em;
+        }
+        .q-text {
+            font-size: 1.05em;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.5;
+            user-select: text;
+        }
+        .q-options {
+            padding: 16px 24px;
+            display: grid;
+            gap: 10px;
+        }
+        .opt-btn {
+            text-align: right;
+            padding: 13px 18px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: var(--gray-50);
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.97em;
+            color: var(--text);
+            transition: all 0.18s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            user-select: text;
+            position: relative;
+        }
+        body.lang-en .opt-btn {
+            text-align: left;
+        }
+        .opt-btn:hover:not(:disabled) {
+            border-color: var(--teal);
+            background: var(--teal-light);
+            color: var(--teal-dark);
+            transform: translateX(-4px);
+        }
+        body.lang-en .opt-btn:hover:not(:disabled) {
+            transform: translateX(4px);
+        }
+        .opt-btn:disabled {
+            cursor: default;
+        }
+        .opt-btn .opt-icon {
+            font-size: 1.1em;
+            flex-shrink: 0;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .opt-btn.correct {
+            background: var(--green-light) !important;
+            border-color: var(--green) !important;
+            color: var(--green) !important;
+            font-weight: 600;
+            transform: none;
+            animation: pop 0.4s ease;
+        }
+        .opt-btn.correct .opt-icon {
+            opacity: 1;
+        }
+        .opt-btn.incorrect {
+            background: var(--red-light) !important;
+            border-color: var(--red) !important;
+            color: var(--red) !important;
+            animation: shake 0.4s ease;
+        }
+        .opt-btn.incorrect .opt-icon {
+            opacity: 1;
+        }
+        .opt-key {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            background: var(--option-key-bg);
+            border: 1px solid var(--option-key-border);
+            font-size: 0.72em;
+            font-weight: 700;
+            color: var(--option-key-color);
+            flex-shrink: 0;
+            font-family: monospace;
+            transition: all 0.15s;
+        }
+        .opt-btn.correct .opt-key,
+        .opt-btn.incorrect .opt-key {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+        body.lang-en .shake {
+            animation-name: shake-ltr;
+        }
+        @keyframes shake-ltr {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(6px); }
+            40% { transform: translateX(-6px); }
+            60% { transform: translateX(4px); }
+            80% { transform: translateX(-4px); }
+        }
+
+        .explanation-box {
+            margin: 0 24px 20px;
+            border-radius: 10px;
+            display: none;
+            overflow: hidden;
+            border: 1px solid var(--explain-border);
+        }
+        .explanation-box.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .explanation-label {
+            font-size: 0.72em;
+            font-weight: 700;
+            color: #7a5c10;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            background: #f5e6b0;
+            padding: 7px 16px;
+            border-bottom: 1px solid var(--explain-border);
+        }
+        .exp-body {
+            font-size: 0.91em;
+            color: var(--explain-text);
+            line-height: 1.7;
+            padding: 14px 16px 10px;
+            background: var(--explain-bg);
+            border-right: 4px solid var(--teal);
+        }
+        body.lang-en .exp-body {
+            border-right: none;
+            border-left: 4px solid var(--teal);
+        }
+
+        .ai-buttons {
+            display: flex;
+            gap: 8px;
+            margin: 10px 24px 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .ai-btn {
+            padding: 6px 14px;
+            border-radius: 99px;
+            border: 1.5px solid var(--border);
+            background: var(--card-bg);
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text);
+        }
+        .ai-btn:hover {
+            border-color: var(--teal);
+            background: var(--teal-light);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 24px 16px 8px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            border: none;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            border-radius: 99px;
+            padding: 10px 22px;
+            font-size: 0.92em;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: var(--shadow-sm);
+            background: var(--gray-50);
+            color: var(--text);
+            border: 1.5px solid var(--border);
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+        .btn-primary {
+            background: var(--teal);
+            color: white;
+            border: none;
+        }
+        .btn-warning {
+            background: #f59e0b;
+            color: #000;
+            border: none;
+        }
+
+        #summary-view {
+            display: none;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 32px 16px 80px;
+        }
+        .summary-hero {
+            background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+            color: white;
+            border-radius: var(--radius);
+            padding: 40px 32px;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-lg);
+        }
+        .summary-score-big {
+            font-family: 'DM Serif Display', serif;
+            font-size: 4.5em;
+            line-height: 1;
+        }
+        .summary-score-label {
+            opacity: 0.85;
+            font-size: 1em;
+            margin-top: 6px;
+        }
+        .summary-pct {
+            display: inline-block;
+            margin-top: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 99px;
+            padding: 6px 20px;
+            font-size: 1.05em;
+            font-weight: 700;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .sstat {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+        .sstat-num {
+            font-size: 2em;
+            font-weight: 700;
+        }
+        .sstat-num.green { color: var(--green); }
+        .sstat-num.red { color: var(--red); }
+        .sstat-num.amber { color: var(--amber); }
+        .sstat-label {
+            font-size: 0.78em;
+            color: var(--gray-400);
+            margin-top: 4px;
+        }
+        .review-header {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.6em;
+            color: var(--red);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+        }
+        .review-item {
+            background: var(--card-bg);
+            border-right: 4px solid var(--red);
+            border-radius: var(--radius);
+            padding: 20px 22px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+        .review-q {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 10px;
+            line-height: 1.5;
+            user-select: text;
+        }
+        .review-yours {
+            color: var(--red);
+            font-size: 0.9em;
+            margin-bottom: 4px;
+        }
+        .review-correct {
+            color: var(--green);
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .review-exp {
+            font-size: 0.87em;
+            color: var(--explain-text);
+            background: var(--explain-bg);
+            border-right: 3px solid #d4a017;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--toast-bg);
+            color: var(--toast-text);
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-8px);
+        }
+
+        @media (max-width: 640px) {
+            .topbar {
+                height: auto;
+                padding: 10px 16px 0;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .topbar-title { display: none; }
+            .header h1 { font-size: 1.8em; }
+            .q-header { padding: 16px 16px 12px; }
+            .q-text { font-size: 0.97em; }
+            .q-options { padding: 10px 14px; gap: 8px; }
+            .opt-btn { padding: 11px 14px; font-size: 0.9em; }
+            .btn { padding: 9px 16px; font-size: 0.86em; }
+            .summary-score-big { font-size: 3em; }
+        }
+    </style>
+</head>
+<body class="">
+    <canvas id="confetti-canvas"></canvas>
+    <div class="toast" id="toast"></div>
+
+    <div class="topbar">
+        <div class="topbar-title" id="app-title">🧠 ماستر الكويز</div>
+        <div class="progress-wrap">
+            <div class="ring-wrap">
+                <svg width="44" height="44" viewBox="0 0 44 44">
+                    <circle class="ring-bg" cx="22" cy="22" r="18"/>
+                    <circle class="ring-fill" cx="22" cy="22" r="18" id="ring-fill"/>
+                </svg>
+                <div class="ring-label">
+                    <span class="ring-answered" id="ring-answered">0</span>
+                    <span class="ring-total" id="ring-total">/0</span>
+                </div>
+            </div>
+        </div>
+        <div class="score-pill">⭐ <span id="score-top">0</span></div>
+        <span id="timer-display">00:20</span>
+        <button id="pause-btn" class="pause-btn" style="display:none;" title="إيقاف مؤقت / استئناف">⏸️</button>
+        <button class="lang-switch" id="lang-toggle" onclick="toggleLanguage()">🇸🇦 عربي</button>
+        <button class="dark-toggle" id="dark-toggle" onclick="toggleDarkMode()">🌙</button>
+    </div>
+
+    <div class="header">
+        <h1 id="main-title">🎓 Quiz — 81 Questions</h1>
+        <p id="main-sub">تم إنشاؤه بواسطة Quiz Bot | Psychiatry, Topic name in English</p>
+    </div>
+
+    <div id="setup-view" class="setup-overlay">
+        <div class="setup-card">
+            <h2 id="setup-title">⚙️ إعدادات الكويز</h2>
+            <div class="setup-group">
+                <label for="display-mode" id="lbl-display">طريقة عرض الأسئلة</label>
+                <select id="display-mode">
+                    <option value="single" selected>سؤال سؤال</option>
+                    <option value="all">جميع الأسئلة في صفحة واحدة</option>
+                </select>
+            </div>
+            <div class="setup-group" id="time-group">
+                <label for="time-select" id="lbl-time">الوقت لكل سؤال</label>
+                <select id="time-select">
+                    <option value="10">10 ثوان</option>
+                    <option value="20" selected>20 ثانية</option>
+                    <option value="40">40 ثانية</option>
+                    <option value="60">1 دقيقة</option>
+                    <option value="120">2 دقيقتان</option>
+                    <option value="180">3 دقائق</option>
+                    <option value="240">4 دقائق</option>
+                    <option value="300">5 دقائق</option>
+                    <option value="0">بدون زمن محدد</option>
+                </select>
+                <small id="time-hint" style="font-size:0.7rem;color:var(--gray-400);display:block;margin-top:6px;"></small>
+            </div>
+            <div class="setup-actions">
+                <button class="btn-primary" id="start-quiz-btn">ابدأ الكويز</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-view" style="display:none;">
+        <div class="q-card" id="question-card">
+            <div class="q-header">
+                <span class="q-num" id="q-num">السؤال 1</span>
+                <div class="q-text" id="q-text">Loading...</div>
+            </div>
+            <div class="q-options" id="options-container"></div>
+            <div class="explanation-box" id="explanation-box">
+                <div class="explanation-label">💡 الشرح</div>
+                <div class="exp-body" id="exp-body"></div>
+            </div>
+            <div class="ai-buttons" id="ai-buttons" style="display: none;">
+                <button class="ai-btn" onclick="askAI('chatgpt')">🤖 ChatGPT</button>
+                <button class="ai-btn" onclick="askAI('gemini')">✨ Gemini</button>
+                <button class="ai-btn" onclick="askAI('deepseek')">🧠 DeepSeek</button>
+            </div>
+        </div>
+        <div class="controls" id="next-controls" style="display: none;">
+            <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">⏭ التالي</button>
+        </div>
+        <div id="multi-question-container" class="multi-question-container" style="display:none;"></div>
+        <div class="controls" id="submit-all-controls" style="display:none;">
+            <button class="btn btn-primary" id="submit-all-btn" onclick="submitAllQuestions()">تسليم الكل</button>
+        </div>
+    </div>
+
+    <div id="summary-view">
+        <div class="summary-hero">
+            <div class="summary-score-big" id="final-score">0</div>
+            <div class="summary-score-label" id="final-outof">من 0</div>
+            <div class="summary-pct" id="final-pct">0%</div>
+        </div>
+        <div class="summary-grid">
+            <div class="sstat">
+                <div class="sstat-num green" id="stat-correct">0</div>
+                <div class="sstat-label">✅ صحيح</div>
+            </div>
+            <div class="sstat">
+                <div class="sstat-num red" id="stat-wrong">0</div>
+                <div class="sstat-label">❌ خطأ</div>
+            </div>
+            <div class="sstat">
+                <div class="sstat-num amber" id="stat-skipped">0</div>
+                <div class="sstat-label">⏰ انتهى الوقت</div>
+            </div>
+        </div>
+        <div id="review-section"></div>
+        <div class="controls" style="padding-top: 20px;">
+            <button class="btn btn-warning" id="review-mistakes-btn" onclick="startMistakeReview()">🔁 إعادة الأخطاء فقط</button>
+            <button class="btn btn-primary" onclick="restartFullQuiz()">🔄 إعادة الكويز كامل</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== QUESTION BANK ====================
+        const QUIZ_DATA = [
+  {
+    id: 1,
+    ar: {
+      question: `1. A 70-year-old man with dementia retains his ability to ride a bicycle despite being unable to recall what he ate for breakfast. The preserved memory is:`,
+      options: ["Autobiographical", "Working memory", "Semantic", "Procedural (implicit)"],
+      correct: 3,
+      explanation: `The correct answer is d. Procedural (implicit) because the man can still ride a bicycle, which is a procedural memory that is often preserved in dementia.`
+    },
+    en: {
+      question: `1. A 70-year-old man with dementia retains his ability to ride a bicycle despite being unable to recall what he ate for breakfast. The preserved memory is:`,
+      options: ["Autobiographical", "Working memory", "Semantic", "Procedural (implicit)"],
+      correct: 3,
+      explanation: `The correct answer is d. Procedural (implicit) because the man can still ride a bicycle, which is a procedural memory that is often preserved in dementia.`
+    }
+  },
+  {
+    id: 2,
+    ar: {
+      question: `2. A 27-year-old woman with bipolar disorder, currently manic, tells you she has been chosen by God to lead a new spiritual movement and that she has “unlimited wisdom and wealth.” This is a delusion of:`,
+      options: ["Grandeur", "Control", "Reference", "Erotomania"],
+      correct: 0,
+      explanation: `The correct answer is c. Grandeur because the woman has an exaggerated sense of her own importance and abilities.`
+    },
+    en: {
+      question: `2. A 27-year-old woman with bipolar disorder, currently manic, tells you she has been chosen by God to lead a new spiritual movement and that she has “unlimited wisdom and wealth.” This is a delusion of:`,
+      options: ["Grandeur", "Control", "Reference", "Erotomania"],
+      correct: 0,
+      explanation: `The correct answer is c. Grandeur because the woman has an exaggerated sense of her own importance and abilities.`
+    }
+  },
+  {
+    id: 3,
+    ar: {
+      question: `3. A 55-year-old man with chronic alcoholism cannot recall events from the past few days. When asked, he fluently produces detailed but obviously fabricated stories to fill the gaps, with no insight into their falseness. This is:`,
+      options: ["Confabulation (paramnesia)", "Delusion", "Lying", "Hypermnesia"],
+      correct: 0,
+      explanation: `The correct answer is d. Confabulation (paramnesia) because the man is filling gaps in his memory with fabricated stories without realizing they are false.`
+    },
+    en: {
+      question: `3. A 55-year-old man with chronic alcoholism cannot recall events from the past few days. When asked, he fluently produces detailed but obviously fabricated stories to fill the gaps, with no insight into their falseness. This is:`,
+      options: ["Confabulation (paramnesia)", "Delusion", "Lying", "Hypermnesia"],
+      correct: 0,
+      explanation: `The correct answer is d. Confabulation (paramnesia) because the man is filling gaps in his memory with fabricated stories without realizing they are false.`
+    }
+  },
+  {
+    id: 4,
+    ar: {
+      question: `4. A 32-year-old combat veteran with PTSD constantly scans his surroundings, sits with his back to walls, and reacts startled to ordinary sounds. This is:`,
+      options: ["Distractibility", "Apathy", "Hypervigilance", "Stupor"],
+      correct: 2,
+      explanation: `The correct answer is b. Hypervigilance because the veteran is constantly on the lookout for potential threats and is easily startled.`
+    },
+    en: {
+      question: `4. A 32-year-old combat veteran with PTSD constantly scans his surroundings, sits with his back to walls, and reacts startled to ordinary sounds. This is:`,
+      options: ["Distractibility", "Apathy", "Hypervigilance", "Stupor"],
+      correct: 2,
+      explanation: `The correct answer is b. Hypervigilance because the veteran is constantly on the lookout for potential threats and is easily startled.`
+    }
+  },
+  {
+    id: 5,
+    ar: {
+      question: `5. After a severe road traffic accident, a 30-year-old man cannot remember anything from 2 hours BEFORE the impact. His memory after the event is intact. This is:`,
+      options: ["Anterograde amnesia", "Retrograde amnesia", "Hypermnesia", "Confabulation"],
+      correct: 1,
+      explanation: `The correct answer is b. Retrograde amnesia because the man cannot remember events before the accident.`
+    },
+    en: {
+      question: `5. After a severe road traffic accident, a 30-year-old man cannot remember anything from 2 hours BEFORE the impact. His memory after the event is intact. This is:`,
+      options: ["Anterograde amnesia", "Retrograde amnesia", "Hypermnesia", "Confabulation"],
+      correct: 1,
+      explanation: `The correct answer is b. Retrograde amnesia because the man cannot remember events before the accident.`
+    }
+  },
+  {
+    id: 6,
+    ar: {
+      question: `6. A 25-year-old woman visits a city for the first time, but during her visit she has a strong sensation she has been there before. The feeling is brief and she knows it is illogical. This is:`,
+      options: ["Déjà-vu", "Confabulation", "Jamais-vu", "Depersonalization"],
+      correct: 0,
+      explanation: `The correct answer is a. Déjà-vu because the woman has a feeling of familiarity in a new place.`
+    },
+    en: {
+      question: `6. A 25-year-old woman visits a city for the first time, but during her visit she has a strong sensation she has been there before. The feeling is brief and she knows it is illogical. This is:`,
+      options: ["Déjà-vu", "Confabulation", "Jamais-vu", "Depersonalization"],
+      correct: 0,
+      explanation: `The correct answer is a. Déjà-vu because the woman has a feeling of familiarity in a new place.`
+    }
+  },
+  {
+    id: 7,
+    ar: {
+      question: `7. A 22-year-old man walking through a forest at dusk briefly mistakes a fallen log for a snake but quickly recognises his error. He has no other symptoms. This experience is best described as:`,
+      options: ["Derealization", "Persecutory delusion", "Visual hallucination", "Illusion"],
+      correct: 3,
+      explanation: `The correct answer is b. Illusion because the man misperceives a real object (the log) as something else (a snake).`
+    },
+    en: {
+      question: `7. A 22-year-old man walking through a forest at dusk briefly mistakes a fallen log for a snake but quickly recognises his error. He has no other symptoms. This experience is best described as:`,
+      options: ["Derealization", "Persecutory delusion", "Visual hallucination", "Illusion"],
+      correct: 3,
+      explanation: `The correct answer is b. Illusion because the man misperceives a real object (the log) as something else (a snake).`
+    }
+  },
+  {
+    id: 8,
+    ar: {
+      question: `8. A mother asks about the mainstay of treatment for her 4-year-old’s recently diagnosed autism. The correct answer is:`,
+      options: ["Lithium", "Stimulant medication", "Antipsychotic medication", "Early, intensive educational and behavioural interventions with parent training"],
+      correct: 3,
+      explanation: `The correct answer is a. Early, intensive educational and behavioural interventions with parent training because this is the most effective treatment for autism.`
+    },
+    en: {
+      question: `8. A mother asks about the mainstay of treatment for her 4-year-old’s recently diagnosed autism. The correct answer is:`,
+      options: ["Lithium", "Stimulant medication", "Antipsychotic medication", "Early, intensive educational and behavioural interventions with parent training"],
+      correct: 3,
+      explanation: `The correct answer is a. Early, intensive educational and behavioural interventions with parent training because this is the most effective treatment for autism.`
+    }
+  },
+  {
+    id: 9,
+    ar: {
+      question: `9. A 16-year-old presents with longstanding inattention. His symptoms first appeared during high school at age 15. According to DSM-5, his symptoms must have started:`,
+      options: ["Before age 12", "Before age 18", "Before age 10", "Before age 7"],
+      correct: 0,
+      explanation: `The correct answer is a. Before age 12 because DSM-5 requires symptoms to be present before age 12 for a diagnosis of ADHD.`
+    },
+    en: {
+      question: `9. A 16-year-old presents with longstanding inattention. His symptoms first appeared during high school at age 15. According to DSM-5, his symptoms must have started:`,
+      options: ["Before age 12", "Before age 18", "Before age 10", "Before age 7"],
+      correct: 0,
+      explanation: `The correct answer is a. Before age 12 because DSM-5 requires symptoms to be present before age 12 for a diagnosis of ADHD.`
+    }
+  },
+  {
+    id: 10,
+    ar: {
+      question: `10. A 28-year-old woman with schizophrenia reports hearing two voices arguing with each other about her actions, even when she is alone. The voices are clear and located outside her head. This is:`,
+      options: ["Thought broadcasting", "Pseudo-hallucination", "Auditory hallucination", "Auditory illusion"],
+      correct: 2,
+      explanation: `The correct answer is c. Auditory hallucination because the woman hears voices that are not there.`
+    },
+    en: {
+      question: `10. A 28-year-old woman with schizophrenia reports hearing two voices arguing with each other about her actions, even when she is alone. The voices are clear and located outside her head. This is:`,
+      options: ["Thought broadcasting", "Pseudo-hallucination", "Auditory hallucination", "Auditory illusion"],
+      correct: 2,
+      explanation: `The correct answer is c. Auditory hallucination because the woman hears voices that are not there.`
+    }
+  },
+  {
+    id: 11,
+    ar: {
+      question: `11. The teacher of an 11-year-old boy reports inattention and hyperactivity at school. His parents say his behaviour is normal at home. To make a DSM-5 diagnosis of ADHD, you need evidence of:`,
+      options: ["Symptoms in only one setting", "Symptoms appearing after age 12", "Symptoms in ≥2 settings (e.g. home AND school)", "Symptoms occurring only at school"],
+      correct: 2,
+      explanation: `The correct answer is c. Symptoms in ≥2 settings (e.g. home AND school) because DSM-5 requires symptoms to be present in multiple settings for a diagnosis of ADHD.`
+    },
+    en: {
+      question: `11. The teacher of an 11-year-old boy reports inattention and hyperactivity at school. His parents say his behaviour is normal at home. To make a DSM-5 diagnosis of ADHD, you need evidence of:`,
+      options: ["Symptoms in only one setting", "Symptoms appearing after age 12", "Symptoms in ≥2 settings (e.g. home AND school)", "Symptoms occurring only at school"],
+      correct: 2,
+      explanation: `The correct answer is c. Symptoms in ≥2 settings (e.g. home AND school) because DSM-5 requires symptoms to be present in multiple settings for a diagnosis of ADHD.`
+    }
+  },
+  {
+    id: 12,
+    ar: {
+      question: `12. A 4-year-old boy with autism becomes severely distressed and self-injurious. The most appropriate pharmacological agent to manage irritability and aggression is:`,
+      options: ["Risperidone", "Methylphenidate", "Diazepam", "Sertraline"],
+      correct: 0,
+      explanation: `The correct answer is a. Risperidone because it is an atypical antipsychotic that is commonly used to manage irritability and aggression in autism.`
+    },
+    en: {
+      question: `12. A 4-year-old boy with autism becomes severely distressed and self-injurious. The most appropriate pharmacological agent to manage irritability and aggression is:`,
+      options: ["Risperidone", "Methylphenidate", "Diazepam", "Sertraline"],
+      correct: 0,
+      explanation: `The correct answer is a. Risperidone because it is an atypical antipsychotic that is commonly used to manage irritability and aggression in autism.`
+    }
+  },
+  {
+    id: 13,
+    ar: {
+      question: `13. A 70-year-old post-operative woman, previously well, develops fluctuating confusion and reports seeing children playing in her hospital room. Her attention wanders. The hallucinations are most likely due to:`,
+      options: ["Late-onset schizophrenia", "Delirium (organic cause)", "Major depressive disorder with psychotic features", "Generalised anxiety disorder"],
+      correct: 1,
+      explanation: `The correct answer is c. Delirium (organic cause) because the woman's symptoms are likely due to a medical condition, such as an infection or medication side effect.`
+    },
+    en: {
+      question: `13. A 70-year-old post-operative woman, previously well, develops fluctuating confusion and reports seeing children playing in her hospital room. Her attention wanders. The hallucinations are most likely due to:`,
+      options: ["Late-onset schizophrenia", "Delirium (organic cause)", "Major depressive disorder with psychotic features", "Generalised anxiety disorder"],
+      correct: 1,
+      explanation: `The correct answer is c. Delirium (organic cause) because the woman's symptoms are likely due to a medical condition, such as an infection or medication side effect.`
+    }
+  },
+  {
+    id: 14,
+    ar: {
+      question: `14. A mother of a 3-year-old asks about the sex distribution of autism. The correct approximate male-to-female ratio is:`,
+      options: ["2 : 1", "10 : 1", "1 : 1", "4–5 : 1"],
+      correct: 3,
+      explanation: `The correct answer is d. 4–5 : 1 because autism is more common in males than females.`
+    },
+    en: {
+      question: `14. A mother of a 3-year-old asks about the sex distribution of autism. The correct approximate male-to-female ratio is:`,
+      options: ["2 : 1", "10 : 1", "1 : 1", "4–5 : 1"],
+      correct: 3,
+      explanation: `The correct answer is d. 4–5 : 1 because autism is more common in males than females.`
+    }
+  },
+  {
+    id: 15,
+    ar: {
+      question: `15. A child diagnosed with ADHD is now 17 years old. What proportion of childhood ADHD persists with functional impairment into adulthood?`,
+      options: ["About 10%", "Almost 100%", "About 25%", "About 50%"],
+      correct: 3,
+      explanation: `The correct answer is b. About 50% because approximately half of children with ADHD will continue to experience symptoms into adulthood.`
+    },
+    en: {
+      question: `15. A child diagnosed with ADHD is now 17 years old. What proportion of childhood ADHD persists with functional impairment into adulthood?`,
+      options: ["About 10%", "Almost 100%", "About 25%", "About 50%"],
+      correct: 3,
+      explanation: `The correct answer is b. About 50% because approximately half of children with ADHD will continue to experience symptoms into adulthood.`
+    }
+  },
+  {
+    id: 16,
+    ar: {
+      question: `16. A 35-year-old patient with schizophrenia denies that he is ill, refuses medication and believes the doctors are misguided. He has total denial of illness. His insight level is:`,
+      options: ["Level 1 (complete denial)", "Level 6 (true emotional insight)", "Level 3 (partial)", "Level 5 (intellectual insight)"],
+      correct: 0,
+      explanation: `The correct answer is b. Level 1 (complete denial) because the patient has no awareness of his illness.`
+    },
+    en: {
+      question: `16. A 35-year-old patient with schizophrenia denies that he is ill, refuses medication and believes the doctors are misguided. He has total denial of illness. His insight level is:`,
+      options: ["Level 1 (complete denial)", "Level 6 (true emotional insight)", "Level 3 (partial)", "Level 5 (intellectual insight)"],
+      correct: 0,
+      explanation: `The correct answer is b. Level 1 (complete denial) because the patient has no awareness of his illness.`
+    }
+  },
+  {
+    id: 17,
+    ar: {
+      question: `17. A 28-year-old man describes recurrent intrusive thoughts that his hands are contaminated. He finds the thoughts distressing, recognises them as his own, and tries to resist them. These are:`,
+      options: ["Delusions", "Overvalued ideas", "Hallucinations", "Obsessions"],
+      correct: 3,
+      explanation: `The correct answer is c. Obsessions because the man has recurring, intrusive thoughts that he tries to resist.`
+    },
+    en: {
+      question: `17. A 28-year-old man describes recurrent intrusive thoughts that his hands are contaminated. He finds the thoughts distressing, recognises them as his own, and tries to resist them. These are:`,
+      options: ["Delusions", "Overvalued ideas", "Hallucinations", "Obsessions"],
+      correct: 3,
+      explanation: `The correct answer is c. Obsessions because the man has recurring, intrusive thoughts that he tries to resist.`
+    }
+  },
+  {
+    id: 18,
+    ar: {
+      question: `18. A 7-year-old boy is diagnosed with ADHD, combined presentation. He has no medical contraindications. The first-line pharmacological treatment is:`,
+      options: ["Methylphenidate (stimulant)", "Atomoxetine", "Sertraline", "Risperidone"],
+      correct: 0,
+      explanation: `The correct answer is d. Methylphenidate (stimulant) because stimulants are the first-line treatment for ADHD.`
+    },
+    en: {
+      question: `18. A 7-year-old boy is diagnosed with ADHD, combined presentation. He has no medical contraindications. The first-line pharmacological treatment is:`,
+      options: ["Methylphenidate (stimulant)", "Atomoxetine", "Sertraline", "Risperidone"],
+      correct: 0,
+      explanation: `The correct answer is d. Methylphenidate (stimulant) because stimulants are the first-line treatment for ADHD.`
+    }
+  },
+  {
+    id: 19,
+    ar: {
+      question: `19. Best outcomes in childhood ADHD are achieved with:`,
+      options: ["Stimulant medication alone", "Antipsychotic medication", "Behavioural therapy alone", "Combined pharmacological and behavioural treatment"],
+      correct: 3,
+      explanation: `The correct answer is c. Combined pharmacological and behavioural treatment because this approach has been shown to be the most effective in managing ADHD symptoms.`
+    },
+    en: {
+      question: `19. Best outcomes in childhood ADHD are achieved with:`,
+      options: ["Stimulant medication alone", "Antipsychotic medication", "Behavioural therapy alone", "Combined pharmacological and behavioural treatment"],
+      correct: 3,
+      explanation: `The correct answer is c. Combined pharmacological and behavioural treatment because this approach has been shown to be the most effective in managing ADHD symptoms.`
+    }
+  },
+  {
+    id: 20,
+    ar: {
+      question: `20. A 23-year-old woman insists that the famous singer she has never met is secretly in love with her, sending her coded messages through his songs. She has written him hundreds of letters. This is:`,
+      options: ["Delusion of reference", "Obsession", "Hypochondriacal delusion", "Erotomania (de Clérambault syndrome)"],
+      correct: 3,
+      explanation: `The correct answer is c. Erotomania (de Clérambault syndrome) because the woman has a delusional belief that the singer is in love with her.`
+    },
+    en: {
+      question: `20. A 23-year-old woman insists that the famous singer she has never met is secretly in love with her, sending her coded messages through his songs. She has written him hundreds of letters. This is:`,
+      options: ["Delusion of reference", "Obsession", "Hypochondriacal delusion", "Erotomania (de Clérambault syndrome)"],
+      correct: 3,
+      explanation: `The correct answer is c. Erotomania (de Clérambault syndrome) because the woman has a delusional belief that the singer is in love with her.`
+    }
+  },
+  {
+    id: 21,
+    ar: {
+      question: `21. A 75-year-old man hospitalised with pneumonia becomes inattentive over 24 hours, with fluctuating awareness, agitation at night, and visual hallucinations of small animals. The most likely diagnosis is:`,
+      options: ["Acute schizophrenia", "Delirium", "Dementia", "Major depression"],
+      correct: 1,
+      explanation: `The correct answer is b. Delirium because the man's symptoms are consistent with a delirium, which is a common complication of medical illnesses in the elderly.`
+    },
+    en: {
+      question: `21. A 75-year-old man hospitalised with pneumonia becomes inattentive over 24 hours, with fluctuating awareness, agitation at night, and visual hallucinations of small animals. The most likely diagnosis is:`,
+      options: ["Acute schizophrenia", "Delirium", "Dementia", "Major depression"],
+      correct: 1,
+      explanation: `The correct answer is b. Delirium because the man's symptoms are consistent with a delirium, which is a common complication of medical illnesses in the elderly.`
+    }
+  },
+  {
+    id: 22,
+    ar: {
+      question: `22. A 9-year-old boy with ADHD also has poor reading achievement despite normal intelligence. The most likely comorbidity is:`,
+      options: ["Conduct disorder", "Autism spectrum disorder", "Specific learning disorder", "Schizophrenia"],
+      correct: 2,
+      explanation: `The correct answer is b. Specific learning disorder because children with ADHD are at increased risk of developing learning disorders, such as dyslexia.`
+    },
+    en: {
+      question: `22. A 9-year-old boy with ADHD also has poor reading achievement despite normal intelligence. The most likely comorbidity is:`,
+      options: ["Conduct disorder", "Autism spectrum disorder", "Specific learning disorder", "Schizophrenia"],
+      correct: 2,
+      explanation: `The correct answer is b. Specific learning disorder because children with ADHD are at increased risk of developing learning disorders, such as dyslexia.`
+    }
+  },
+  {
+    id: 23,
+    ar: {
+      question: `23. A 28-year-old man with severe catatonic schizophrenia lies in bed mute and immobile but his eyes track the examiner and he withdraws his hand from a painful stimulus. He is in:`,
+      options: ["Coma", "Somnolence", "Stupor", "Persistent vegetative state"],
+      correct: 2,
+      explanation: `The correct answer is a. Stupor because the man is unresponsive and immobile, but still has some awareness of his surroundings.`
+    },
+    en: {
+      question: `23. A 28-year-old man with severe catatonic schizophrenia lies in bed mute and immobile but his eyes track the examiner and he withdraws his hand from a painful stimulus. He is in:`,
+      options: ["Coma", "Somnolence", "Stupor", "Persistent vegetative state"],
+      correct: 2,
+      explanation: `The correct answer is a. Stupor because the man is unresponsive and immobile, but still has some awareness of his surroundings.`
+    }
+  },
+  {
+    id: 24,
+    ar: {
+      question: `24. A 10-year-old boy is being evaluated for ADHD. According to DSM-5, the minimum duration of symptoms required to make the diagnosis is:`,
+      options: ["6 months", "3 months", "12 months", "1 month"],
+      correct: 0,
+      explanation: `The correct answer is c. 6 months because DSM-5 requires symptoms to be present for at least 6 months to diagnose ADHD.`
+    },
+    en: {
+      question: `24. A 10-year-old boy is being evaluated for ADHD. According to DSM-5, the minimum duration of symptoms required to make the diagnosis is:`,
+      options: ["6 months", "3 months", "12 months", "1 month"],
+      correct: 0,
+      explanation: `The correct answer is c. 6 months because DSM-5 requires symptoms to be present for at least 6 months to diagnose ADHD.`
+    }
+  },
+  {
+    id: 25,
+    ar: {
+      question: `25. A 70-year-old woman post-stroke produces fluent but meaningless speech with neologisms; she cannot follow commands and is unaware of her deficit. The lesion is most likely in the:`,
+      options: ["Left posterior superior temporal gyrus (Wernicke’s area)", "Frontal pole", "Left inferior frontal gyrus", "Cerebellum"],
+      correct: 0,
+      explanation: `The correct answer is d. Left posterior superior temporal gyrus (Wernicke’s area) because the woman's symptoms are consistent with Wernicke's aphasia, which is characterized by fluent but meaningless speech.`
+    },
+    en: {
+      question: `25. A 70-year-old woman post-stroke produces fluent but meaningless speech with neologisms; she cannot follow commands and is unaware of her deficit. The lesion is most likely in the:`,
+      options: ["Left posterior superior temporal gyrus (Wernicke’s area)", "Frontal pole", "Left inferior frontal gyrus", "Cerebellum"],
+      correct: 0,
+      explanation: `The correct answer is d. Left posterior superior temporal gyrus (Wernicke’s area) because the woman's symptoms are consistent with Wernicke's aphasia, which is characterized by fluent but meaningless speech.`
+    }
+  },
+  {
+    id: 26,
+    ar: {
+      question: `26. A 45-year-old man with bipolar disorder, currently manic, spends his life savings on a yacht he cannot afford and quits his job to “become an explorer.” His behaviour reflects impaired:`,
+      options: ["Judgment", "Orientation", "Perception", "Memory"],
+      correct: 0,
+      explanation: `The correct answer is b. Judgment because the man's behaviour is impulsive and reckless, indicating poor judgment.`
+    },
+    en: {
+      question: `26. A 45-year-old man with bipolar disorder, currently manic, spends his life savings on a yacht he cannot afford and quits his job to “become an explorer.” His behaviour reflects impaired:`,
+      options: ["Judgment", "Orientation", "Perception", "Memory"],
+      correct: 0,
+      explanation: `The correct answer is b. Judgment because the man's behaviour is impulsive and reckless, indicating poor judgment.`
+    }
+  },
+  {
+    id: 27,
+    ar: {
+      question: `27. A parent asks why their 3-year-old does not point to objects of interest or share their attention. This deficit corresponds to which DSM-5 ASD criterion?`,
+      options: ["Sensory hyporeactivity", "Insistence on sameness", "Stereotyped motor movements", "Deficits in non-verbal communicative behaviours used for social interaction"],
+      correct: 3,
+      explanation: `The correct answer is a. Deficits in non-verbal communicative behaviours used for social interaction because the child's behaviour is consistent with a deficit in social communication.`
+    },
+    en: {
+      question: `27. A parent asks why their 3-year-old does not point to objects of interest or share their attention. This deficit corresponds to which DSM-5 ASD criterion?`,
+      options: ["Sensory hyporeactivity", "Insistence on sameness", "Stereotyped motor movements", "Deficits in non-verbal communicative behaviours used for social interaction"],
+      correct: 3,
+      explanation: `The correct answer is a. Deficits in non-verbal communicative behaviours used for social interaction because the child's behaviour is consistent with a deficit in social communication.`
+    }
+  },
+  {
+    id: 28,
+    ar: {
+      question: `28. A pediatrician asks about the typical age of onset of autism spectrum disorder. The correct answer is:`,
+      options: ["After age 7", "In adolescence", "Before age 3", "In early adulthood"],
+      correct: 2,
+      explanation: `The correct answer is b. Before age 3 because autism spectrum disorder typically becomes apparent during the first three years of life.`
+    },
+    en: {
+      question: `28. A pediatrician asks about the typical age of onset of autism spectrum disorder. The correct answer is:`,
+      options: ["After age 7", "In adolescence", "Before age 3", "In early adulthood"],
+      correct: 2,
+      explanation: `The correct answer is b. Before age 3 because autism spectrum disorder typically becomes apparent during the first three years of life.`
+    }
+  },
+  {
+    id: 29,
+    ar: {
+      question: `29. A 67-year-old woman known to have anxiety attends the emergency department confused and disoriented. Disorientation in a psychiatric patient should first prompt evaluation for:`,
+      options: ["Worsening anxiety", "An organic / medical cause", "Malingering", "Conversion disorder"],
+      correct: 1,
+      explanation: `The correct answer is c. An organic / medical cause because disorientation can be a symptom of a medical condition, such as an infection or medication side effect.`
+    },
+    en: {
+      question: `29. A 67-year-old woman known to have anxiety attends the emergency department confused and disoriented. Disorientation in a psychiatric patient should first prompt evaluation for:`,
+      options: ["Worsening anxiety", "An organic / medical cause", "Malingering", "Conversion disorder"],
+      correct: 1,
+      explanation: `The correct answer is c. An organic / medical cause because disorientation can be a symptom of a medical condition, such as an infection or medication side effect.`
+    }
+  },
+  {
+    id: 30,
+    ar: {
+      question: `30. A 30-year-old patient with chronic schizophrenia has a wooden, expressionless face and monotonous voice, with no emotional reaction to news of any kind. This is:`,
+      options: ["Apathy", "Blunted affect", "Flat affect", "Anhedonia"],
+      correct: 2,
+      explanation: `The correct answer is c. Flat affect because the patient has a lack of emotional expression and response.`
+    },
+    en: {
+      question: `30. A 30-year-old patient with chronic schizophrenia has a wooden, expressionless face and monotonous voice, with no emotional reaction to news of any kind. This is:`,
+      options: ["Apathy", "Blunted affect", "Flat affect", "Anhedonia"],
+      correct: 2,
+      explanation: `The correct answer is c. Flat affect because the patient has a lack of emotional expression and response.`
+    }
+  },
+  {
+    id: 31,
+    ar: {
+      question: `31. Which neurotransmitter systems are most implicated in the pathophysiology of ADHD?`,
+      options: ["Histamine and orexin", "Acetylcholine and glutamate", "Dopamine and noradrenaline", "Serotonin and GABA"],
+      correct: 2,
+      explanation: `The correct answer is c. Dopamine and noradrenaline because these neurotransmitters are involved in attention and impulse control, and are thought to play a key role in the development of ADHD.`
+    },
+    en: {
+      question: `31. Which neurotransmitter systems are most implicated in the pathophysiology of ADHD?`,
+      options: ["Histamine and orexin", "Acetylcholine and glutamate", "Dopamine and noradrenaline", "Serotonin and GABA"],
+      correct: 2,
+      explanation: `The correct answer is c. Dopamine and noradrenaline because these neurotransmitters are involved in attention and impulse control, and are thought to play a key role in the development of ADHD.`
+    }
+  },
+  {
+    id: 32,
+    ar: {
+      question: `32. A father with diagnosed ADHD asks about the chance that his children might also have ADHD. The best answer is that:`,
+      options: ["ADHD is not inherited", "Risk is only 5%", "Risk depends only on environmental factors", "First-degree relatives of probands have a high risk; heritability is 70–80%"],
+      correct: 3,
+      explanation: `The correct answer is d. First-degree relatives of probands have a high risk; heritability is 70–80% because ADHD has a strong genetic component, and first-degree relatives of individuals with ADHD are at increased risk of developing the disorder.`
+    },
+    en: {
+      question: `32. A father with diagnosed ADHD asks about the chance that his children might also have ADHD. The best answer is that:`,
+      options: ["ADHD is not inherited", "Risk is only 5%", "Risk depends only on environmental factors", "First-degree relatives of probands have a high risk; heritability is 70–80%"],
+      correct: 3,
+      explanation: `The correct answer is d. First-degree relatives of probands have a high risk; heritability is 70–80% because ADHD has a strong genetic component, and first-degree relatives of individuals with ADHD are at increased risk of developing the disorder.`
+    }
+  },
+  {
+    id: 33,
+    ar: {
+      question: `33. A 60-year-old woman is admitted with sepsis. She cannot say what day it is, where she is, but knows her own name. The order of orientation loss demonstrated is:`,
+      options: ["Place → person → time", "Time → place → person", "Person → place → time", "Simultaneous loss in all spheres"],
+      correct: 1,
+      explanation: `The correct answer is c. Time → place → person because the woman has lost orientation to time, then place, but still knows her own name (person).`
+    },
+    en: {
+      question: `33. A 60-year-old woman is admitted with sepsis. She cannot say what day it is, where she is, but knows her own name. The order of orientation loss demonstrated is:`,
+      options: ["Place → person → time", "Time → place → person", "Person → place → time", "Simultaneous loss in all spheres"],
+      correct: 1,
+      explanation: `The correct answer is c. Time → place → person because the woman has lost orientation to time, then place, but still knows her own name (person).`
+    }
+  },
+  {
+    id: 34,
+    ar: {
+      question: `34. A 35-year-old man insists that government agents have implanted a tracking chip in him. He has barricaded his apartment windows. Despite normal scans, he remains unshakably convinced. This belief is best classified as:`,
+      options: ["Persecutory delusion", "Obsession", "Overvalued idea", "Hypochondriacal delusion"],
+      correct: 0,
+      explanation: `The correct answer is d. Persecutory delusion because the man has a delusional belief that he is being persecuted by government agents.`
+    },
+    en: {
+      question: `34. A 35-year-old man insists that government agents have implanted a tracking chip in him. He has barricaded his apartment windows. Despite normal scans, he remains unshakably convinced. This belief is best classified as:`,
+      options: ["Persecutory delusion", "Obsession", "Overvalued idea", "Hypochondriacal delusion"],
+      correct: 0,
+      explanation: `The correct answer is d. Persecutory delusion because the man has a delusional belief that he is being persecuted by government agents.`
+    }
+  },
+  {
+    id: 35,
+    ar: {
+      question: `35. A 32-year-old man believes that television news anchors are sending him secret personal messages through their gestures and choice of words. He has no other psychotic symptoms beyond this. This is a delusion of:`,
+      options: ["Persecution", "Control", "Reference", "Grandeur"],
+      correct: 2,
+      explanation: `The correct answer is c. Reference because the man believes that the news anchors are sending him personal messages, which is a delusion of reference.`
+    },
+    en: {
+      question: `35. A 32-year-old man believes that television news anchors are sending him secret personal messages through their gestures and choice of words. He has no other psychotic symptoms beyond this. This is a delusion of:`,
+      options: ["Persecution", "Control", "Reference", "Grandeur"],
+      correct: 2,
+      explanation: `The correct answer is c. Reference because the man believes that the news anchors are sending him personal messages, which is a delusion of reference.`
+    }
+  },
+  {
+    id: 36,
+    ar: {
+      question: `36. A 5-year-old boy with autism flaps his hands repeatedly, lines objects up in rows, and has an intense fixed interest in train schedules. These behaviours represent:`,
+      options: ["Cognitive deficits", "Sensory processing disorder alone", "Restricted, repetitive patterns of behaviour", "Social communication deficits"],
+      correct: 2,
+      explanation: `The correct answer is d. Restricted, repetitive patterns of behaviour because the boy's behaviours are repetitive and stereotyped, which is a common feature of autism spectrum disorder.`
+    },
+    en: {
+      question: `36. A 5-year-old boy with autism flaps his hands repeatedly, lines objects up in rows, and has an intense fixed interest in train schedules. These behaviours represent:`,
+      options: ["Cognitive deficits", "Sensory processing disorder alone", "Restricted, repetitive patterns of behaviour", "Social communication deficits"],
+      correct: 2,
+      explanation: `The correct answer is d. Restricted, repetitive patterns of behaviour because the boy's behaviours are repetitive and stereotyped, which is a common feature of autism spectrum disorder.`
+    }
+  },
+  {
+    id: 37,
+    ar: {
+      question: `37. A 40-year-old man with schizophrenia smiles broadly and laughs while telling you his mother has died. His emotional expression is:`,
+      options: ["Flat affect", "Labile affect", "Incongruous affect", "Blunted affect"],
+      correct: 2,
+      explanation: `The correct answer is a. Incongruous affect because the man's emotional expression (smiling and laughing) is inconsistent with the context (talking about his mother's death).`
+    },
+    en: {
+      question: `37. A 40-year-old man with schizophrenia smiles broadly and laughs while telling you his mother has died. His emotional expression is:`,
+      options: ["Flat affect", "Labile affect", "Incongruous affect", "Blunted affect"],
+      correct: 2,
+      explanation: `The correct answer is a. Incongruous affect because the man's emotional expression (smiling and laughing) is inconsistent with the context (talking about his mother's death).`
+    }
+  },
+  {
+    id: 38,
+    ar: {
+      question: `38. A 9-year-old child with ADHD also has a history of substance abuse in the family and a comorbid tic disorder. The most appropriate pharmacological choice is:`,
+      options: ["Diazepam", "High-dose methylphenidate", "Lithium", "Atomoxetine"],
+      correct: 3,
+      explanation: `The correct answer is a. Atomoxetine because it is a non-stimulant medication that is effective in treating ADHD and has a lower risk of abuse compared to stimulants.`
+    },
+    en: {
+      question: `38. A 9-year-old child with ADHD also has a history of substance abuse in the family and a comorbid tic disorder. The most appropriate pharmacological choice is:`,
+      options: ["Diazepam", "High-dose methylphenidate", "Lithium", "Atomoxetine"],
+      correct: 3,
+      explanation: `The correct answer is a. Atomoxetine because it is a non-stimulant medication that is effective in treating ADHD and has a lower risk of abuse compared to stimulants.`
+    }
+  },
+  {
+    id: 39,
+    ar: {
+      question: `39. A 50-year-old man in alcohol withdrawal is brushing his arms repeatedly, saying insects are crawling under his skin. Examination shows no skin lesions. This is:`,
+      options: ["Somatic delusion", "Tactile hallucination (formication)", "Conversion symptom", "Visual hallucination"],
+      correct: 1,
+      explanation: `The correct answer is c. Tactile hallucination (formication) because the man is experiencing a hallucination of insects crawling under his skin, which is a common symptom of alcohol withdrawal.`
+    },
+    en: {
+      question: `39. A 50-year-old man in alcohol withdrawal is brushing his arms repeatedly, saying insects are crawling under his skin. Examination shows no skin lesions. This is:`,
+      options: ["Somatic delusion", "Tactile hallucination (formication)", "Conversion symptom", "Visual hallucination"],
+      correct: 1,
+      explanation: `The correct answer is c. Tactile hallucination (formication) because the man is experiencing a hallucination of insects crawling under his skin, which is a common symptom of alcohol withdrawal.`
+    }
+  },
+  {
+    id: 40,
+    ar: {
+      question: `40. A 45-year-old man is convinced his wife is having an affair despite no evidence. He follows her, reads her messages and accuses her constantly. This is:`,
+      options: ["Persecutory delusion", "Othello syndrome (delusion of infidelity)", "Capgras syndrome", "Erotomania"],
+      correct: 1,
+      explanation: `The correct answer is b. Othello syndrome (delusion of infidelity) because the man has a delusional belief that his wife is being unfaithful, which is a classic symptom of Othello syndrome.`
+    },
+    en: {
+      question: `40. A 45-year-old man is convinced his wife is having an affair despite no evidence. He follows her, reads her messages and accuses her constantly. This is:`,
+      options: ["Persecutory delusion", "Othello syndrome (delusion of infidelity)", "Capgras syndrome", "Erotomania"],
+      correct: 1,
+      explanation: `The correct answer is b. Othello syndrome (delusion of infidelity) because the man has a delusional belief that his wife is being unfaithful, which is a classic symptom of Othello syndrome.`
+    }
+  },
+  {
+    id: 41,
+    ar: {
+      question: `41. DSM-5 requires deficits in TWO core domains for diagnosis of autism spectrum disorder. These are:`,
+      options: ["Intellectual deficits + adaptive deficits", "Inattention and hyperactivity", "Social communication deficits + restricted/repetitive behaviours", "Hallucinations + delusions"],
+      correct: 2,
+      explanation: `The correct answer is c. Social communication deficits + restricted/repetitive behaviours because DSM-5 requires deficits in both social communication and restricted/repetitive behaviours to diagnose autism spectrum disorder.`
+    },
+    en: {
+      question: `41. DSM-5 requires deficits in TWO core domains for diagnosis of autism spectrum disorder. These are:`,
+      options: ["Intellectual deficits + adaptive deficits", "Inattention and hyperactivity", "Social communication deficits + restricted/repetitive behaviours", "Hallucinations + delusions"],
+      correct: 2,
+      explanation: `The correct answer is c. Social communication deficits + restricted/repetitive behaviours because DSM-5 requires deficits in both social communication and restricted/repetitive behaviours to diagnose autism spectrum disorder.`
+    }
+  },
+  {
+    id: 42,
+    ar: {
+      question: `42. A 55-year-old man can speak fluently and understand normally but struggles to name common objects (e.g. calls a watch “that thing on the wrist”). This is:`,
+      options: ["Conduction aphasia", "Sensory aphasia", "Nominal (anomic) aphasia", "Motor aphasia"],
+      correct: 2,
+      explanation: `The correct answer is b. Nominal (anomic) aphasia because the man has difficulty naming objects, which is a characteristic of anomic aphasia.`
+    },
+    en: {
+      question: `42. A 55-year-old man can speak fluently and understand normally but struggles to name common objects (e.g. calls a watch “that thing on the wrist”). This is:`,
+      options: ["Conduction aphasia", "Sensory aphasia", "Nominal (anomic) aphasia", "Motor aphasia"],
+      correct: 2,
+      explanation: `The correct answer is b. Nominal (anomic) aphasia because the man has difficulty naming objects, which is a characteristic of anomic aphasia.`
+    }
+  },
+  {
+    id: 43,
+    ar: {
+      question: `43. A 4-year-old boy has poor eye contact, no functional speech, lines up his toy cars for hours, and is distressed by any change in routine. Most likely diagnosis:`,
+      options: ["ADHD", "Intellectual disability alone", "Autism spectrum disorder", "Selective mutism"],
+      correct: 2,
+      explanation: `The correct answer is c. Autism spectrum disorder because the boy's symptoms (poor eye contact, no functional speech, repetitive behaviours, and distress with change in routine) are consistent with autism spectrum disorder.`
+    },
+    en: {
+      question: `43. A 4-year-old boy has poor eye contact, no functional speech, lines up his toy cars for hours, and is distressed by any change in routine. Most likely diagnosis:`,
+      options: ["ADHD", "Intellectual disability alone", "Autism spectrum disorder", "Selective mutism"],
+      correct: 2,
+      explanation: `The correct answer is c. Autism spectrum disorder because the boy's symptoms (poor eye contact, no functional speech, repetitive behaviours, and distress with change in routine) are consistent with autism spectrum disorder.`
+    }
+  },
+  {
+    id: 44,
+    ar: {
+      question: `44. A 30-year-old manic patient is speaking very rapidly, jumping from topic to topic with links based on rhymes and puns. The listener can follow the connections if they listen carefully. This is best described as:`,
+      options: ["Word salad", "Flight of ideas", "Loosening of associations", "Tangentiality"],
+      correct: 1,
+      explanation: `The correct answer is c. Flight of ideas because the patient's speech is rapid and jumps from topic to topic, with connections based on rhymes and puns.`
+    },
+    en: {
+      question: `44. A 30-year-old manic patient is speaking very rapidly, jumping from topic to topic with links based on rhymes and puns. The listener can follow the connections if they listen carefully. This is best described as:`,
+      options: ["Word salad", "Flight of ideas", "Loosening of associations", "Tangentiality"],
+      correct: 1,
+      explanation: `The correct answer is c. Flight of ideas because the patient's speech is rapid and jumps from topic to topic, with connections based on rhymes and puns.`
+    }
+  },
+  {
+    id: 45,
+    ar: {
+      question: `45. A 65-year-old man with a recent stroke can understand commands and follow instructions but his own speech is effortful, telegraphic and produces only a few words at a time. The lesion is most likely in the:`,
+      options: ["Left posterior superior temporal gyrus", "Left inferior frontal gyrus (Broca’s area)", "Right parietal lobe", "Arcuate fasciculus"],
+      correct: 1,
+      explanation: `The correct answer is b. Left inferior frontal gyrus (Broca’s area) because the man's symptoms are consistent with Broca's aphasia, which is characterized by effortful and telegraphic speech.`
+    },
+    en: {
+      question: `45. A 65-year-old man with a recent stroke can understand commands and follow instructions but his own speech is effortful, telegraphic and produces only a few words at a time. The lesion is most likely in the:`,
+      options: ["Left posterior superior temporal gyrus", "Left inferior frontal gyrus (Broca’s area)", "Right parietal lobe", "Arcuate fasciculus"],
+      correct: 1,
+      explanation: `The correct answer is b. Left inferior frontal gyrus (Broca’s area) because the man's symptoms are consistent with Broca's aphasia, which is characterized by effortful and telegraphic speech.`
+    }
+  },
+  {
+    id: 46,
+    ar: {
+      question: `10`,
+      options: ["", "Correct answer", "", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `10`,
+      options: ["", "Correct answer", "", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 47,
+    ar: {
+      question: `11`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `11`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 48,
+    ar: {
+      question: `12`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `12`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 49,
+    ar: {
+      question: `13`,
+      options: ["Correct answer", "", "", ""],
+      correct: 0,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `13`,
+      options: ["Correct answer", "", "", ""],
+      correct: 0,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 50,
+    ar: {
+      question: `14`,
+      options: ["Correct answer", "", "", ""],
+      correct: 0,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `14`,
+      options: ["Correct answer", "", "", ""],
+      correct: 0,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 51,
+    ar: {
+      question: `15`,
+      options: ["", "", "Correct answer", ""],
+      correct: 2,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `15`,
+      options: ["", "", "Correct answer", ""],
+      correct: 2,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 52,
+    ar: {
+      question: `16`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `16`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 53,
+    ar: {
+      question: `17`,
+      options: ["Correct answer", "", "", ""],
+      correct: 0,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `17`,
+      options: ["Correct answer", "", "", ""],
+      correct: 0,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 54,
+    ar: {
+      question: `18`,
+      options: ["", "", "Correct answer", ""],
+      correct: 2,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `18`,
+      options: ["", "", "Correct answer", ""],
+      correct: 2,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 55,
+    ar: {
+      question: `19`,
+      options: ["Correct answer", "", "", ""],
+      correct: 0,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `19`,
+      options: ["Correct answer", "", "", ""],
+      correct: 0,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 56,
+    ar: {
+      question: `20`,
+      options: ["", "Correct answer", "", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `20`,
+      options: ["", "Correct answer", "", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 57,
+    ar: {
+      question: `21`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `21`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 58,
+    ar: {
+      question: `22`,
+      options: ["", "Correct answer", "", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `22`,
+      options: ["", "Correct answer", "", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 59,
+    ar: {
+      question: `23`,
+      options: ["", "Correct answer", "", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `23`,
+      options: ["", "Correct answer", "", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 60,
+    ar: {
+      question: `24`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `24`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 61,
+    ar: {
+      question: `25`,
+      options: ["", "Correct answer", "", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `25`,
+      options: ["", "Correct answer", "", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 62,
+    ar: {
+      question: `26`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `26`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 63,
+    ar: {
+      question: `27`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `27`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 64,
+    ar: {
+      question: `28`,
+      options: ["", "", "Correct answer", ""],
+      correct: 2,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `28`,
+      options: ["", "", "Correct answer", ""],
+      correct: 2,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 65,
+    ar: {
+      question: `29`,
+      options: ["", "Correct answer", "", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `29`,
+      options: ["", "Correct answer", "", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 66,
+    ar: {
+      question: `30`,
+      options: ["", "", "Correct answer", ""],
+      correct: 2,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `30`,
+      options: ["", "", "Correct answer", ""],
+      correct: 2,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 67,
+    ar: {
+      question: `31`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `31`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 68,
+    ar: {
+      question: `32`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `32`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 69,
+    ar: {
+      question: `33`,
+      options: ["Correct answer", "", "", ""],
+      correct: 0,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `33`,
+      options: ["Correct answer", "", "", ""],
+      correct: 0,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 70,
+    ar: {
+      question: `34`,
+      options: ["", "", "Correct answer", ""],
+      correct: 2,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `34`,
+      options: ["", "", "Correct answer", ""],
+      correct: 2,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 71,
+    ar: {
+      question: `35`,
+      options: ["", "", "Correct answer", ""],
+      correct: 2,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `35`,
+      options: ["", "", "Correct answer", ""],
+      correct: 2,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 72,
+    ar: {
+      question: `36`,
+      options: ["", "", "Correct answer", ""],
+      correct: 2,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `36`,
+      options: ["", "", "Correct answer", ""],
+      correct: 2,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 73,
+    ar: {
+      question: `37`,
+      options: ["", "Correct answer", "Correct answer", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `37`,
+      options: ["", "Correct answer", "Correct answer", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 74,
+    ar: {
+      question: `38`,
+      options: ["Correct answer", "Correct answer", "", ""],
+      correct: 0,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `38`,
+      options: ["Correct answer", "Correct answer", "", ""],
+      correct: 0,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 75,
+    ar: {
+      question: `39`,
+      options: ["", "Correct answer", "", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `39`,
+      options: ["", "Correct answer", "", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 76,
+    ar: {
+      question: `40`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `40`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 77,
+    ar: {
+      question: `41`,
+      options: ["Correct answer", "", "", ""],
+      correct: 0,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `41`,
+      options: ["Correct answer", "", "", ""],
+      correct: 0,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 78,
+    ar: {
+      question: `42`,
+      options: ["", "Correct answer", "", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `42`,
+      options: ["", "Correct answer", "", ""],
+      correct: 1,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 79,
+    ar: {
+      question: `43`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `43`,
+      options: ["", "", "", "Correct answer"],
+      correct: 3,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 80,
+    ar: {
+      question: `44`,
+      options: ["Correct answer", "", "", ""],
+      correct: 0,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `44`,
+      options: ["Correct answer", "", "", ""],
+      correct: 0,
+      explanation: `Explanation.`
+    }
+  },
+  {
+    id: 81,
+    ar: {
+      question: `45`,
+      options: ["", "", "Correct answer", ""],
+      correct: 2,
+      explanation: `Explanation.`
+    },
+    en: {
+      question: `45`,
+      options: ["", "", "Correct answer", ""],
+      correct: 2,
+      explanation: `Explanation.`
+    }
+  }
+];
+
+        // ==================== STATE ====================
+        let currentLang = 'ar';
+        let isDark = false;
+        let allQuestions = [];
+        let currentQIndex = 0;
+        let score = 0;
+        let wrongQuestions = [];
+        let timerInterval = null;
+        let timeLeft = 20;
+        const TIME_PER_QUESTION = 20;
+        let answered = false;
+        let isReviewMode = false;
+        let quizActive = false;
+        let originalQuestions = [...QUIZ_DATA];
+
+        let quizConfig = {
+            displayMode: 'single',
+            timePerQuestion: 20,
+            pauseAvailable: true,
+            totalTime: 0,
+        };
+        let multiAnswers = [];
+        let isPaused = false;
+
+        // ==================== UTILS ====================
+        function shuffle(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function t(key) {
+            const lang = currentLang;
+            const dict = {
+                ar: {
+                    title: '🧠 ماستر الكويز',
+                    mainTitle: '🎓 Quiz — 81 Questions',
+                    mainSub: 'تم إنشاؤه بواسطة Quiz Bot | Psychiatry, Topic name in English',
+                    next: '⏭ التالي',
+                    correct: '✅ إجابة صحيحة!',
+                    wrong: '❌ إجابة خاطئة',
+                    timeUp: '⏰ انتهى الوقت!',
+                    outOf: 'من',
+                    correctStat: '✅ صحيح',
+                    wrongStat: '❌ خطأ',
+                    skippedStat: '⏰ انتهى الوقت',
+                    reviewHeader: '📝 الأسئلة الخاطئة',
+                    retryWrong: '🔁 إعادة الأخطاء فقط',
+                    retryAll: '🔄 إعادة الكويز كامل',
+                    noMistakes: 'لا توجد أخطاء، عمل رائع! 🎉',
+                    copied: 'تم نسخ السؤال! الصقه في الشات 💬',
+                    setupTitle: '⚙️ إعدادات الكويز',
+                    displayModeLabel: 'طريقة عرض الأسئلة',
+                    single: 'سؤال سؤال',
+                    all: 'جميع الأسئلة في صفحة واحدة',
+                    timeLabel: 'الوقت لكل سؤال',
+                    unlimited: 'بدون زمن محدد',
+                    start: 'ابدأ الكويز',
+                    pauseTip: 'إيقاف مؤقت / استئناف',
+                    submitAll: 'تسليم الكل',
+                    timeHintSingle: 'سيتم تطبيق هذا الوقت على كل سؤال على حدة.',
+                    timeHintAll: 'سيتم ضرب الوقت في عدد الأسئلة لتحديد الزمن الكلي للصفحة.'
+                },
+                en: {
+                    title: '🧠 Quiz Master',
+                    mainTitle: '🎓 Quiz Master',
+                    mainSub: 'Test your knowledge and enjoy the challenge!',
+                    next: '⏭ Next',
+                    correct: '✅ Correct!',
+                    wrong: '❌ Wrong',
+                    timeUp: '⏰ Time\'s Up!',
+                    outOf: 'out of',
+                    correctStat: '✅ Correct',
+                    wrongStat: '❌ Wrong',
+                    skippedStat: '⏰ Time Up',
+                    reviewHeader: '📝 Wrong Answers',
+                    retryWrong: '🔁 Retry Mistakes Only',
+                    retryAll: '🔄 Retry Full Quiz',
+                    noMistakes: 'No mistakes, great job! 🎉',
+                    copied: 'Question copied! Paste in chat 💬',
+                    setupTitle: '⚙️ Quiz Settings',
+                    displayModeLabel: 'Display Mode',
+                    single: 'One by one',
+                    all: 'All questions on one page',
+                    timeLabel: 'Time per question',
+                    unlimited: 'No time limit',
+                    start: 'Start Quiz',
+                    pauseTip: 'Pause / Resume',
+                    submitAll: 'Submit All',
+                    timeHintSingle: 'This time will apply to each question separately.',
+                    timeHintAll: 'The time will be multiplied by the number of questions for total page time.'
+                }
+            };
+            return dict[lang] && dict[lang][key] ? dict[lang][key] : key;
+        }
+
+        // ==================== DOM REFS ====================
+        const $mainView = document.getElementById('main-view');
+        const $summaryView = document.getElementById('summary-view');
+        const $questionCard = document.getElementById('question-card');
+        const $qNum = document.getElementById('q-num');
+        const $qText = document.getElementById('q-text');
+        const $optionsContainer = document.getElementById('options-container');
+        const $explanationBox = document.getElementById('explanation-box');
+        const $expBody = document.getElementById('exp-body');
+        const $aiButtons = document.getElementById('ai-buttons');
+        const $nextControls = document.getElementById('next-controls');
+        const $nextBtn = document.getElementById('next-btn');
+        const $timerDisplay = document.getElementById('timer-display');
+        const $ringFill = document.getElementById('ring-fill');
+        const $ringAnswered = document.getElementById('ring-answered');
+        const $ringTotal = document.getElementById('ring-total');
+        const $scoreTop = document.getElementById('score-top');
+        const $toast = document.getElementById('toast');
+        const $confettiCanvas = document.getElementById('confetti-canvas');
+        const ctxCanvas = $confettiCanvas.getContext('2d');
+        const $darkToggle = document.getElementById('dark-toggle');
+        const $langToggle = document.getElementById('lang-toggle');
+        const $pauseBtn = document.getElementById('pause-btn');
+        const $multiContainer = document.getElementById('multi-question-container');
+        const $submitAllControls = document.getElementById('submit-all-controls');
+        const $setupView = document.getElementById('setup-view');
+        const $displayModeSelect = document.getElementById('display-mode');
+        const $timeSelect = document.getElementById('time-select');
+        const $timeHint = document.getElementById('time-hint');
+        const $startQuizBtn = document.getElementById('start-quiz-btn');
+        let audioCtx = null;
+        let confettiParticles = [];
+        let confettiAnimId = null;
+
+        // ==================== AUDIO ====================
+        function getAudioCtx() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            try {
+                const ac = getAudioCtx();
+                const now = ac.currentTime;
+                if (type === 'correct') {
+                    [523.25, 659.25, 783.99].forEach((freq, i) => {
+                        const osc = ac.createOscillator();
+                        const gain = ac.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.value = freq;
+                        gain.gain.setValueAtTime(0.25, now + i * 0.1);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.25);
+                        osc.connect(gain);
+                        gain.connect(ac.destination);
+                        osc.start(now + i * 0.1);
+                        osc.stop(now + i * 0.1 + 0.25);
+                    });
+                } else if (type === 'wrong') {
+                    const osc = ac.createOscillator();
+                    const gain = ac.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.value = 150;
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.connect(gain);
+                    gain.connect(ac.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                }
+            } catch (e) {}
+        }
+
+        function spawnConfetti() {
+            const cx = window.innerWidth / 2;
+            const cy = window.innerHeight * 0.4;
+            const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff922b', '#845ef7'];
+            for (let i = 0; i < 80; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 3 + Math.random() * 8;
+                confettiParticles.push({
+                    x: cx, y: cy,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - Math.random() * 5,
+                    size: 4 + Math.random() * 7,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rotation: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 10,
+                    life: 1,
+                    decay: 0.008 + Math.random() * 0.02,
+                    gravity: 0.15,
+                });
+            }
+            if (!confettiAnimId) animateConfetti();
+        }
+
+        function animateConfetti() {
+            ctxCanvas.clearRect(0, 0, $confettiCanvas.width, $confettiCanvas.height);
+            let anyAlive = false;
+            confettiParticles.forEach(p => {
+                if (p.life <= 0) return;
+                anyAlive = true;
+                p.x += p.vx;
+                p.vy += p.gravity;
+                p.y += p.vy;
+                p.rotation += p.rotSpeed;
+                p.life -= p.decay;
+                ctxCanvas.save();
+                ctxCanvas.translate(p.x, p.y);
+                ctxCanvas.rotate((p.rotation * Math.PI) / 180);
+                ctxCanvas.globalAlpha = Math.max(0, p.life);
+                ctxCanvas.fillStyle = p.color;
+                ctxCanvas.fillRect(-p.size / 2, -p.size / 3, p.size, p.size * 0.6);
+                ctxCanvas.restore();
+            });
+            confettiParticles = confettiParticles.filter(p => p.life > 0);
+            if (anyAlive) {
+                confettiAnimId = requestAnimationFrame(animateConfetti);
+            } else {
+                confettiAnimId = null;
+                ctxCanvas.clearRect(0, 0, $confettiCanvas.width, $confettiCanvas.height);
+            }
+        }
+
+        function showToast(msg) {
+            $toast.textContent = msg;
+            $toast.classList.add('show');
+            clearTimeout($toast._timeout);
+            $toast._timeout = setTimeout(() => $toast.classList.remove('show'), 2000);
+        }
+
+        function resizeCanvas() {
+            $confettiCanvas.width = window.innerWidth;
+            $confettiCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // ==================== QUIZ FLOW ====================
+        function startQuiz(questionSet = null, config = null) {
+            if (config) quizConfig = { ...quizConfig, ...config };
+            const source = questionSet || [...QUIZ_DATA];
+            allQuestions = shuffle(source.map(q => ({ ...q })));
+            currentQIndex = 0;
+            score = 0;
+            wrongQuestions = [];
+            answered = false;
+            quizActive = true;
+            isReviewMode = !!questionSet;
+            multiAnswers = new Array(allQuestions.length).fill(-1);
+
+            updateScoreDisplay();
+            updateProgressRing();
+            showMainView();
+
+            if (quizConfig.displayMode === 'all') {
+                $questionCard.style.display = 'none';
+                $nextControls.style.display = 'none';
+                $multiContainer.style.display = 'block';
+                $submitAllControls.style.display = 'flex';
+                renderAllQuestions();
+                startGlobalTimer();
+                $pauseBtn.style.display = (quizConfig.timePerQuestion > 0 ? 'inline-flex' : 'none');
+            } else {
+                $questionCard.style.display = 'block';
+                $multiContainer.style.display = 'none';
+                $submitAllControls.style.display = 'none';
+                renderQuestion();
+                startTimer();
+                $pauseBtn.style.display = (quizConfig.timePerQuestion > 0 ? 'inline-flex' : 'none');
+                $nextControls.style.display = 'none';
+                $aiButtons.style.display = 'none';
+                $explanationBox.classList.remove('show');
+            }
+            $pauseBtn.textContent = '⏸️';
+            isPaused = false;
+        }
+
+        function renderQuestion() {
+            if (currentQIndex >= allQuestions.length) {
+                endQuiz();
+                return;
+            }
+            answered = false;
+            const q = allQuestions[currentQIndex];
+            const localized = q[currentLang] || q.ar;
+            $qNum.textContent = `السؤال ${currentQIndex+1}`;
+            if (currentLang === 'en') $qNum.textContent = `Question ${currentQIndex+1}`;
+            $qText.textContent = localized.question;
+
+            const shuffledOptions = shuffle(localized.options.map((text, idx) => ({ text, originalIndex: idx })));
+            q._shuffled = shuffledOptions;
+            q._correctIdx = localized.correct;
+
+            const letters = currentLang === 'ar' ? ['أ', 'ب', 'ج', 'د', 'هـ', 'و'] : ['A', 'B', 'C', 'D', 'E', 'F'];
+            $optionsContainer.innerHTML = '';
+            shuffledOptions.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'opt-btn';
+                btn.innerHTML = `<span class="opt-key">${letters[i]}</span><span>${opt.text}</span><span class="opt-icon">✓</span>`;
+                btn.addEventListener('click', () => selectOption(i, btn));
+                $optionsContainer.appendChild(btn);
+            });
+
+            $explanationBox.classList.remove('show');
+            $aiButtons.style.display = 'none';
+            $nextControls.style.display = 'none';
+            $questionCard.classList.remove('card-correct', 'card-wrong');
+            resetTimer();
+            updateProgressRing();
+        }
+
+        function selectOption(shuffledIndex, btn) {
+            if (answered) return;
+            answered = true;
+            clearInterval(timerInterval);
+            const q = allQuestions[currentQIndex];
+            const correctOriginal = q._correctIdx;
+            const selectedOriginal = q._shuffled[shuffledIndex].originalIndex;
+            const isCorrect = (selectedOriginal === correctOriginal);
+
+            const allBtns = $optionsContainer.querySelectorAll('.opt-btn');
+            allBtns.forEach((b, i) => {
+                b.disabled = true;
+                const orig = q._shuffled[i].originalIndex;
+                if (orig === correctOriginal) b.classList.add('correct');
+                if (i === shuffledIndex && !isCorrect) b.classList.add('incorrect');
+            });
+
+            if (isCorrect) {
+                score++;
+                playSound('correct');
+                spawnConfetti();
+                $questionCard.classList.add('card-correct');
+            } else {
+                playSound('wrong');
+                $questionCard.classList.add('card-wrong');
+                wrongQuestions.push({ ...q, userAnswer: selectedOriginal });
+            }
+            updateScoreDisplay();
+            showExplanation(q);
+            $aiButtons.style.display = 'flex';
+            $nextControls.style.display = 'flex';
+            updateProgressRing();
+        }
+
+        function timeUp() {
+            if (answered) return;
+            answered = true;
+            clearInterval(timerInterval);
+            const q = allQuestions[currentQIndex];
+            const correctOriginal = q._correctIdx;
+            const allBtns = $optionsContainer.querySelectorAll('.opt-btn');
+            allBtns.forEach((b, i) => {
+                b.disabled = true;
+                if (q._shuffled[i].originalIndex === correctOriginal) b.classList.add('correct');
+            });
+            playSound('wrong');
+            $questionCard.classList.add('card-wrong');
+            wrongQuestions.push({ ...q, userAnswer: -1 });
+            showExplanation(q);
+            $aiButtons.style.display = 'flex';
+            $nextControls.style.display = 'flex';
+            updateProgressRing();
+            updateScoreDisplay();
+        }
+
+        function showExplanation(q) {
+            const localized = q[currentLang] || q.ar;
+            $expBody.textContent = localized.explanation || 'لا يوجد شرح';
+            $explanationBox.classList.add('show');
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            if (currentQIndex >= allQuestions.length) {
+                endQuiz();
+            } else {
+                renderQuestion();
+                startTimer();
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            if (quizConfig.timePerQuestion <= 0) {
+                $timerDisplay.textContent = '∞';
+                $timerDisplay.classList.remove('warning', 'danger');
+                return;
+            }
+            timeLeft = quizConfig.timePerQuestion;
+            updateTimerDisplay();
+            $timerDisplay.classList.remove('warning', 'danger');
+            timerInterval = setInterval(() => {
+                if (isPaused) return;
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 5 && timeLeft > 2) {
+                    $timerDisplay.classList.add('warning');
+                    $timerDisplay.classList.remove('danger');
+                } else if (timeLeft <= 2 && timeLeft > 0) {
+                    $timerDisplay.classList.remove('warning');
+                    $timerDisplay.classList.add('danger');
+                }
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    $timerDisplay.classList.add('danger');
+                    timeUp();
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timeLeft = quizConfig.timePerQuestion;
+            updateTimerDisplay();
+            $timerDisplay.classList.remove('warning', 'danger');
+            startTimer();
+        }
+
+        function updateTimerDisplay() {
+            if (quizConfig.timePerQuestion <= 0) {
+                $timerDisplay.textContent = '∞';
+                return;
+            }
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            $timerDisplay.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            if (timeLeft <= 0) $timerDisplay.textContent = '0:00';
+        }
+
+        function updateScoreDisplay() {
+            $scoreTop.textContent = score;
+        }
+
+        function updateProgressRing() {
+            const total = allQuestions.length;
+            const answeredCount = currentQIndex + (answered ? 1 : 0);
+            const pct = total ? (answeredCount / total) * 100 : 0;
+            const circumference = 113;
+            const offset = circumference - (pct / 100) * circumference;
+            $ringFill.style.strokeDashoffset = offset;
+            $ringAnswered.textContent = answeredCount;
+            $ringTotal.textContent = '/' + total;
+        }
+
+        function endQuiz() {
+            clearInterval(timerInterval);
+            quizActive = false;
+            $pauseBtn.style.display = 'none';
+            showSummaryView();
+            renderSummary();
+        }
+
+        function showMainView() {
+            $mainView.style.display = 'block';
+            $summaryView.style.display = 'none';
+        }
+
+        function showSummaryView() {
+            $mainView.style.display = 'none';
+            $summaryView.style.display = 'block';
+        }
+
+        function renderSummary() {
+            const total = allQuestions.length;
+            const correct = score;
+            const wrong = wrongQuestions.length;
+            const skipped = total - correct - wrong;
+            const pct = Math.round((correct / total) * 100) || 0;
+
+            document.getElementById('final-score').textContent = correct;
+            document.getElementById('final-outof').textContent = `${t('outOf')} ${total}`;
+            document.getElementById('final-pct').textContent = pct + '%';
+            document.getElementById('stat-correct').textContent = correct;
+            document.getElementById('stat-wrong').textContent = wrong;
+            document.getElementById('stat-skipped').textContent = skipped;
+
+            const reviewSection = document.getElementById('review-section');
+            const reviewBtn = document.getElementById('review-mistakes-btn');
+            if (wrongQuestions.length === 0) {
+                reviewSection.innerHTML = `<p style="text-align:center; padding:20px;">${t('noMistakes')}</p>`;
+                reviewBtn.style.display = 'none';
+            } else {
+                reviewBtn.style.display = 'inline-flex';
+                let html = `<div class="review-header">${t('reviewHeader')}</div>`;
+                wrongQuestions.forEach(q => {
+                    const loc = q[currentLang] || q.ar;
+                    const correctText = loc.options[loc.correct];
+                    const userText = q.userAnswer >= 0 ? loc.options[q.userAnswer] : '—';
+                    html += `<div class="review-item">
+                        <div class="review-q">${loc.question}</div>
+                        <div class="review-yours">❌ إجابتك: ${userText}</div>
+                        <div class="review-correct">✓ الإجابة الصحيحة: ${correctText}</div>
+                        <div class="review-exp">${loc.explanation || ''}</div>
+                    </div>`;
+                });
+                reviewSection.innerHTML = html;
+            }
+        }
+
+        function startMistakeReview() {
+            if (wrongQuestions.length === 0) {
+                showToast(t('noMistakes'));
+                return;
+            }
+            // ================= [رابط إعلان الإعادة] =================
+            window.open('https://www.effectivecpmnetwork.com/qt2iy86f7?key=21db61c11d498f2c6f56ceffe1a82bdd', '_blank');
+            // ========================================================
+            startQuiz(wrongQuestions.map(q => ({ ...q, id: q.id })), quizConfig);
+        }
+
+        function restartFullQuiz() {
+            clearInterval(timerInterval);
+            // ================= [رابط إعلان الإعادة] =================
+            window.open('https://www.effectivecpmnetwork.com/qt2iy86f7?key=21db61c11d498f2c6f56ceffe1a82bdd', '_blank');
+            // ========================================================
+            startQuiz(null, quizConfig);
+        }
+
+        // ==================== MULTI MODE ====================
+        function renderAllQuestions() {
+            $multiContainer.innerHTML = '';
+            const letters = currentLang === 'ar' ? ['أ', 'ب', 'ج', 'د', 'هـ', 'و'] : ['A', 'B', 'C', 'D', 'E', 'F'];
+            allQuestions.forEach((q, idx) => {
+                const loc = q[currentLang] || q.ar;
+                const card = document.createElement('div');
+                card.className = 'q-card';
+                card.id = `multi-card-${idx}`;
+                const shuffled = shuffle(loc.options.map((text, i) => ({ text, originalIndex: i })));
+                q._shuffled = shuffled;
+                q._correctIdx = loc.correct;
+                let optionsHtml = '';
+                shuffled.forEach((opt, i) => {
+                    optionsHtml += `<button class="opt-btn" data-qidx="${idx}" data-shuffled="${i}" data-orig="${opt.originalIndex}">
+                        <span class="opt-key">${letters[i]}</span><span>${opt.text}</span><span class="opt-icon">✓</span>
+                    </button>`;
+                });
+                card.innerHTML = `
+                    <div class="q-header">
+                        <span class="q-num">سؤال ${idx+1}</span>
+                        <div class="q-text">${loc.question}</div>
+                    </div>
+                    <div class="q-options" id="multi-options-${idx}">${optionsHtml}</div>
+                    <div class="explanation-box" id="multi-exp-box-${idx}" style="display:none;">
+                        <div class="explanation-label">💡 الشرح</div>
+                        <div class="exp-body" id="multi-exp-body-${idx}"></div>
+                    </div>
+                    <div class="ai-buttons" id="multi-ai-${idx}" style="display:none;">
+                        <button class="ai-btn" onclick="askAIForMulti(${idx}, 'chatgpt')">🤖 ChatGPT</button>
+                        <button class="ai-btn" onclick="askAIForMulti(${idx}, 'gemini')">✨ Gemini</button>
+                        <button class="ai-btn" onclick="askAIForMulti(${idx}, 'deepseek')">🧠 DeepSeek</button>
+                    </div>
+                `;
+                $multiContainer.appendChild(card);
+            });
+
+            $multiContainer.querySelectorAll('.opt-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const qIdx = parseInt(this.dataset.qidx);
+                    const shuffledIdx = parseInt(this.dataset.shuffled);
+                    const origIdx = parseInt(this.dataset.orig);
+                    if (multiAnswers[qIdx] !== -1) return;
+                    multiAnswers[qIdx] = origIdx;
+                    const optionsDiv = document.getElementById(`multi-options-${qIdx}`);
+                    const allBtns = optionsDiv.querySelectorAll('.opt-btn');
+                    const q = allQuestions[qIdx];
+                    const isCorrect = (origIdx === q._correctIdx);
+                    allBtns.forEach((b, i) => {
+                        b.disabled = true;
+                        const bOrig = parseInt(b.dataset.orig);
+                        if (bOrig === q._correctIdx) b.classList.add('correct');
+                        if (i === shuffledIdx && !isCorrect) b.classList.add('incorrect');
+                    });
+                    const expBox = document.getElementById(`multi-exp-box-${qIdx}`);
+                    const expBody = document.getElementById(`multi-exp-body-${qIdx}`);
+                    const loc = q[currentLang] || q.ar;
+                    expBody.textContent = loc.explanation || 'لا يوجد شرح';
+                    expBox.style.display = 'block';
+                    const card = document.getElementById(`multi-card-${qIdx}`);
+                    if (isCorrect) {
+                        card.classList.add('card-correct');
+                        playSound('correct');
+                        spawnConfetti();
+                    } else {
+                        card.classList.add('card-wrong');
+                        playSound('wrong');
+                    }
+                    const aiDiv = document.getElementById(`multi-ai-${qIdx}`);
+                    if (aiDiv) aiDiv.style.display = 'flex';
+                    updateProgressRingForMulti();
+                });
+            });
+            updateProgressRingForMulti();
+        }
+
+        function updateProgressRingForMulti() {
+            const total = allQuestions.length;
+            const answeredCount = multiAnswers.filter(a => a !== -1).length;
+            const pct = total ? (answeredCount / total) * 100 : 0;
+            const circumference = 113;
+            const offset = circumference - (pct / 100) * circumference;
+            $ringFill.style.strokeDashoffset = offset;
+            $ringAnswered.textContent = answeredCount;
+            $ringTotal.textContent = '/' + total;
+        }
+
+        function startGlobalTimer() {
+            clearInterval(timerInterval);
+            if (quizConfig.timePerQuestion <= 0) {
+                $timerDisplay.textContent = '∞';
+                $timerDisplay.classList.remove('warning', 'danger');
+                return;
+            }
+            timeLeft = quizConfig.timePerQuestion * allQuestions.length;
+            updateTimerDisplay();
+            $timerDisplay.classList.remove('warning', 'danger');
+            timerInterval = setInterval(() => {
+                if (isPaused) return;
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 10 && timeLeft > 3) {
+                    $timerDisplay.classList.add('warning');
+                    $timerDisplay.classList.remove('danger');
+                } else if (timeLeft <= 3 && timeLeft > 0) {
+                    $timerDisplay.classList.remove('warning');
+                    $timerDisplay.classList.add('danger');
+                }
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    $timerDisplay.classList.add('danger');
+                    submitAllQuestions(true);
+                }
+            }, 1000);
+        }
+
+        function submitAllQuestions(timedOut = false) {
+            if (!quizActive) return;
+            quizActive = false;
+            clearInterval(timerInterval);
+            $pauseBtn.style.display = 'none';
+            allQuestions.forEach((q, idx) => {
+                if (multiAnswers[idx] === -1) {
+                    const optionsDiv = document.getElementById(`multi-options-${idx}`);
+                    if (optionsDiv) {
+                        const allBtns = optionsDiv.querySelectorAll('.opt-btn');
+                        allBtns.forEach(b => {
+                            b.disabled = true;
+                            const bOrig = parseInt(b.dataset.orig);
+                            if (bOrig === q._correctIdx) b.classList.add('correct');
+                        });
+                    }
+                    wrongQuestions.push({ ...q, userAnswer: -1 });
+                } else {
+                    if (multiAnswers[idx] === q._correctIdx) {
+                        score++;
+                    } else {
+                        wrongQuestions.push({ ...q, userAnswer: multiAnswers[idx] });
+                    }
+                }
+                const card = document.getElementById(`multi-card-${idx}`);
+                if (card) {
+                    if (multiAnswers[idx] === q._correctIdx) {
+                        card.classList.add('card-correct');
+                    } else if (multiAnswers[idx] !== -1) {
+                        card.classList.add('card-wrong');
+                    } else {
+                        card.classList.add('card-wrong'); // unanswered
+                    }
+                }
+                const expBox = document.getElementById(`multi-exp-box-${idx}`);
+                const expBody = document.getElementById(`multi-exp-body-${idx}`);
+                if (expBox && expBody) {
+                    const loc = q[currentLang] || q.ar;
+                    expBody.textContent = loc.explanation || 'لا يوجد شرح';
+                    expBox.style.display = 'block';
+                }
+                const aiDiv = document.getElementById(`multi-ai-${idx}`);
+                if (aiDiv) aiDiv.style.display = 'flex';
+            });
+            updateScoreDisplay();
+            updateProgressRingForMulti();
+            if (timedOut) playSound('wrong');
+            setTimeout(() => endQuiz(), 500);
+        }
+
+        function askAIForMulti(qIdx, service) {
+            const q = allQuestions[qIdx];
+            if (!q) return;
+            const loc = q[currentLang] || q.ar;
+            const text = loc.question;
+            const encoded = encodeURIComponent(text);
+            let url = '';
+            if (service === 'chatgpt') url = `https://chatgpt.com/?q=${encoded}`;
+            else if (service === 'gemini') url = `https://gemini.google.com/app?q=${encoded}`;
+            else if (service === 'deepseek') url = `https://chat.deepseek.com/?q=${encoded}`;
+            navigator.clipboard?.writeText(text).catch(() => {});
+            showToast(t('copied'));
+            setTimeout(() => window.open(url, '_blank', 'noopener'), 300);
+        }
+
+        // ==================== PAUSE ====================
+        function togglePause() {
+            if (!quizActive || quizConfig.timePerQuestion <= 0) return;
+            isPaused = !isPaused;
+            $pauseBtn.textContent = isPaused ? '▶️' : '⏸️';
+            if (isPaused) {
+                clearInterval(timerInterval);
+            } else {
+                if (quizConfig.displayMode === 'all') {
+                    startGlobalTimer();
+                } else {
+                    startTimer();
+                }
+            }
+        }
+        $pauseBtn.addEventListener('click', togglePause);
+
+        // ==================== SETUP SCREEN ====================
+        function updateSetupHint() {
+            const mode = $displayModeSelect.value;
+            const hintEl = $timeHint;
+            if (mode === 'all') {
+                hintEl.textContent = t('timeHintAll');
+            } else {
+                hintEl.textContent = t('timeHintSingle');
+            }
+        }
+        $displayModeSelect.addEventListener('change', updateSetupHint);
+        $timeSelect.addEventListener('change', updateSetupHint);
+
+        function applySetupLanguage() {
+            document.getElementById('setup-title').textContent = t('setupTitle');
+            document.getElementById('lbl-display').textContent = t('displayModeLabel');
+            document.getElementById('lbl-time').textContent = t('timeLabel');
+            const modeSelect = document.getElementById('display-mode');
+            modeSelect.options[0].text = t('single');
+            modeSelect.options[1].text = t('all');
+            const timeSelect = document.getElementById('time-select');
+            const timeOptions = timeSelect.options;
+            for (let i = 0; i < timeOptions.length - 1; i++) {
+                if (currentLang === 'en') {
+                    const val = timeOptions[i].value;
+                    const enTexts = { '10': '10 sec', '20': '20 sec', '40': '40 sec', '60': '1 min', '120': '2 min', '180': '3 min', '240': '4 min', '300': '5 min' };
+                    timeOptions[i].textContent = enTexts[val] || val + ' sec';
+                } else {
+                    const arTexts = { '10': '10 ثوان', '20': '20 ثانية', '40': '40 ثانية', '60': '1 دقيقة', '120': '2 دقيقتان', '180': '3 دقائق', '240': '4 دقائق', '300': '5 دقائق' };
+                    timeOptions[i].textContent = arTexts[timeOptions[i].value] || timeOptions[i].value + ' ثانية';
+                }
+            }
+            if (currentLang === 'en') {
+                timeOptions[timeOptions.length-1].textContent = 'No time limit';
+            } else {
+                timeOptions[timeOptions.length-1].textContent = 'بدون زمن محدد';
+            }
+            document.getElementById('start-quiz-btn').textContent = t('start');
+            updateSetupHint();
+        }
+
+        function showSetup() {
+            $mainView.style.display = 'none';
+            $summaryView.style.display = 'none';
+            $setupView.style.display = 'flex';
+            applySetupLanguage();
+        }
+
+        $startQuizBtn.addEventListener('click', () => {
+            // ================= [رابط إعلان زر ابدأ] =================
+            window.open('https://www.effectivecpmnetwork.com/e60mbi5hri?key=f06c24e2e2eee98aa50b45ce39e45289', '_blank');
+            // ========================================================
+            const displayMode = $displayModeSelect.value;
+            const timeVal = parseInt($timeSelect.value, 10);
+            const config = {
+                displayMode: displayMode,
+                timePerQuestion: timeVal,
+            };
+            $setupView.style.display = 'none';
+            startQuiz(null, config);
+        });
+
+        // ==================== LANGUAGE & DARK ====================
+        function applyLanguage() {
+            document.body.classList.toggle('lang-en', currentLang === 'en');
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            $langToggle.textContent = currentLang === 'ar' ? '🇸🇦 عربي' : '🇬🇧 English';
+            document.getElementById('app-title').textContent = t('title');
+            document.getElementById('main-title').textContent = t('mainTitle');
+            document.getElementById('main-sub').textContent = t('mainSub');
+            if (quizActive && allQuestions.length > 0) {
+                if (quizConfig.displayMode === 'all') {
+                    renderAllQuestions();
+                } else {
+                    renderQuestion();
+                }
+                updateTimerDisplay();
+            }
+            if ($summaryView.style.display !== 'none') renderSummary();
+            $nextBtn.textContent = t('next');
+            applySetupLanguage();
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            applyLanguage();
+        }
+
+        function toggleDarkMode() {
+            isDark = !isDark;
+            document.body.classList.toggle('dark', isDark);
+            $darkToggle.textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('quizDark', isDark ? '1' : '0');
+        }
+
+        function loadDarkPref() {
+            if (localStorage.getItem('quizDark') === '1') {
+                isDark = true;
+                document.body.classList.add('dark');
+                $darkToggle.textContent = '☀️';
+            }
+        }
+
+        // ==================== AI ASK (single mode) ====================
+        function askAI(service) {
+            if (!quizActive || !allQuestions[currentQIndex]) return;
+            const q = allQuestions[currentQIndex];
+            const loc = q[currentLang] || q.ar;
+            const text = loc.question;
+            const encoded = encodeURIComponent(text);
+            let url = '';
+            if (service === 'chatgpt') url = `https://chatgpt.com/?q=${encoded}`;
+            else if (service === 'gemini') url = `https://gemini.google.com/app?q=${encoded}`;
+            else if (service === 'deepseek') url = `https://chat.deepseek.com/?q=${encoded}`;
+            navigator.clipboard?.writeText(text).catch(() => {});
+            showToast(t('copied'));
+            setTimeout(() => window.open(url, '_blank', 'noopener'), 300);
+        }
+
+        // ==================== INIT ====================
+        function init() {
+            loadDarkPref();
+            applyLanguage();
+            showSetup();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (!quizActive) return;
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+                if (quizConfig.displayMode === 'single' && answered && $nextControls.style.display !== 'none') {
+                    e.preventDefault();
+                    nextQuestion();
+                }
+            }
+            if (!answered && quizConfig.displayMode === 'single') {
+                const keys = currentLang === 'ar' ? ['1', '2', '3', '4', '5', '6'] : ['1', '2', '3', '4', '5', '6'];
+                const idx = keys.indexOf(e.key);
+                if (idx >= 0) {
+                    const btns = $optionsContainer.querySelectorAll('.opt-btn');
+                    if (btns[idx]) btns[idx].click();
+                }
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>
